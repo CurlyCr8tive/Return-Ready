@@ -5,15 +5,26 @@
 'use client'
 
 import { useState } from 'react'
+import { useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 export default function LoginPage() {
+  const searchParams = useSearchParams()
   const [mode, setMode] = useState<'magic' | 'password'>('magic')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const notAllowed = searchParams.get('error') === 'not_allowed'
+
+  useEffect(() => {
+    if (notAllowed) {
+      setError('This email is not approved for dashboard access.')
+      supabase.auth.signOut()
+    }
+  }, [notAllowed])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
