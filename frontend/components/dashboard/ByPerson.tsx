@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { dashboardAPI, PersonSummary } from '@/lib/api'
+import { mockPeople } from '@/lib/mock-data'
 
 export function ByPerson() {
   const [people, setPeople] = useState<PersonSummary[]>([])
@@ -10,7 +11,8 @@ export function ByPerson() {
   useEffect(() => {
     dashboardAPI
       .getByPerson()
-      .then((res) => setPeople(res.people))
+      .then((res) => setPeople(res.people.length ? res.people : mockPeople))
+      .catch(() => setPeople(mockPeople))
       .finally(() => setLoading(false))
   }, [])
 

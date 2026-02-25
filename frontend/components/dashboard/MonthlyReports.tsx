@@ -1,7 +1,9 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { dashboardAPI, TeamReport } from '@/lib/api'
+import { mockMonthlyReports } from '@/lib/mock-data'
 
 export function MonthlyReports() {
   const [reports, setReports] = useState<TeamReport[]>([])
@@ -11,15 +13,10 @@ export function MonthlyReports() {
   useEffect(() => {
     dashboardAPI
       .getMonthly()
-      .then((res) => setReports(res.reports))
+      .then((res) => setReports(res.reports.length ? res.reports : mockMonthlyReports))
+      .catch(() => setReports(mockMonthlyReports))
       .finally(() => setLoading(false))
   }, [])
-
-  const runGenerate = async () => {
-    await dashboardAPI.generateMonthly()
-    const res = await dashboardAPI.getMonthly()
-    setReports(res.reports)
-  }
 
   return (
     <section className="space-y-4 text-slate-100">
@@ -28,12 +25,12 @@ export function MonthlyReports() {
           <h2 className="text-3xl font-semibold text-white">Monthly Reports</h2>
           <p className="mt-2 text-sm text-slate-300">March / April / May synthesis and KPI trend summaries.</p>
         </div>
-        <button
-          onClick={runGenerate}
+        <Link
+          href="/dashboard/monthly/mock-generated"
           className="rounded-xl bg-cyan-300/25 px-4 py-2 text-sm text-white hover:bg-cyan-300/35"
         >
           Generate Now
-        </button>
+        </Link>
       </div>
 
       {loading ? <p className="text-slate-300">Loading...</p> : null}

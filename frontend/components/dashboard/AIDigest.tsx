@@ -1,7 +1,9 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { aiDigestAPI, AIDigest as AIDigestType } from '@/lib/api'
+import { mockDigests } from '@/lib/mock-data'
 
 export function AIDigest() {
   const [digests, setDigests] = useState<AIDigestType[]>([])
@@ -9,18 +11,17 @@ export function AIDigest() {
   const [expanded, setExpanded] = useState<Record<number, boolean>>({})
 
   const load = async () => {
-    const res = await aiDigestAPI.list()
-    setDigests(res.digests)
+    try {
+      const res = await aiDigestAPI.list()
+      setDigests(res.digests.length ? res.digests : mockDigests)
+    } catch {
+      setDigests(mockDigests)
+    }
   }
 
   useEffect(() => {
     load().finally(() => setLoading(false))
   }, [])
-
-  const generate = async () => {
-    await aiDigestAPI.generate()
-    await load()
-  }
 
   return (
     <section className="space-y-4 text-slate-100">
@@ -29,12 +30,12 @@ export function AIDigest() {
           <h2 className="text-3xl font-semibold text-white">AI News Digest</h2>
           <p className="mt-2 text-sm text-slate-300">Weekly digest with implications for Pursuit.</p>
         </div>
-        <button
-          onClick={generate}
+        <Link
+          href="/dashboard/ai-digest/mock-generated"
           className="rounded-xl bg-cyan-300/25 px-4 py-2 text-sm text-white hover:bg-cyan-300/35"
         >
           Generate Now
-        </button>
+        </Link>
       </div>
 
       {loading ? <p className="text-slate-300">Loading...</p> : null}

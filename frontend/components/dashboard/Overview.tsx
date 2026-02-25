@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { aiDigestAPI, dashboardAPI } from '@/lib/api'
+import { mockDigests, mockOverview } from '@/lib/mock-data'
 
 export function Overview() {
   const [overview, setOverview] = useState<{
@@ -22,6 +23,8 @@ export function Overview() {
 
       if (overviewRes.status === 'fulfilled') {
         setOverview(overviewRes.value)
+      } else {
+        setOverview(mockOverview)
       }
 
       if (digestRes.status === 'fulfilled' && digestRes.value.digests.length > 0) {
@@ -29,6 +32,11 @@ export function Overview() {
         const happened = newest.sections.what_happened_this_week
         if (Array.isArray(happened) && happened.length > 0) {
           setLatestDigestHeadline(String(happened[0]))
+        }
+      } else {
+        const fallback = mockDigests[0]?.sections.what_happened_this_week
+        if (Array.isArray(fallback) && fallback.length > 0) {
+          setLatestDigestHeadline(String(fallback[0]))
         }
       }
     }

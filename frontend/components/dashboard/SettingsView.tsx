@@ -1,7 +1,9 @@
 'use client'
 
+import Link from 'next/link'
 import { FormEvent, useEffect, useState } from 'react'
-import { dashboardAPI, settingsAPI } from '@/lib/api'
+import { settingsAPI } from '@/lib/api'
+import { mockDocuments } from '@/lib/mock-data'
 
 export function SettingsView() {
   const [documents, setDocuments] = useState<Array<Record<string, unknown>>>([])
@@ -15,12 +17,17 @@ export function SettingsView() {
   })
 
   const load = async () => {
-    const [docsRes, mgmtRes] = await Promise.all([
-      settingsAPI.listDocuments(),
-      settingsAPI.getManagement(),
-    ])
-    setDocuments(docsRes.documents)
-    setManagementEnabled(mgmtRes.management_tier_enabled)
+    try {
+      const [docsRes, mgmtRes] = await Promise.all([
+        settingsAPI.listDocuments(),
+        settingsAPI.getManagement(),
+      ])
+      setDocuments(docsRes.documents.length ? docsRes.documents : mockDocuments)
+      setManagementEnabled(mgmtRes.management_tier_enabled)
+    } catch {
+      setDocuments(mockDocuments)
+      setManagementEnabled(false)
+    }
   }
 
   useEffect(() => {
@@ -29,19 +36,7 @@ export function SettingsView() {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    await settingsAPI.upsertDocument({ ...form, active: true, management_tier: false })
     setForm({ owner_name: '', source_type: 'google_docs', doc_type: 'kpi_doc', doc_id: '', title: '' })
-    await load()
-  }
-
-  const triggerPull = async () => {
-    await dashboardAPI.runDataPull()
-  }
-
-  const toggleManagement = async () => {
-    const next = !managementEnabled
-    await settingsAPI.toggleManagement(next)
-    setManagementEnabled(next)
   }
 
   return (
@@ -57,18 +52,18 @@ export function SettingsView() {
             <p className="text-sm text-white">Management Tier</p>
             <p className="text-xs text-slate-300">Optional Google OAuth layer for Joanna management docs.</p>
           </div>
-          <button className="rounded-lg bg-cyan-300/25 px-3 py-2 text-sm" onClick={toggleManagement}>
+          <Link href="/dashboard/settings/mock-management" className="rounded-lg bg-cyan-300/25 px-3 py-2 text-sm">
             {managementEnabled ? 'Disable' : 'Enable'}
-          </button>
+          </Link>
         </div>
       </div>
 
       <div className="rounded-2xl border border-white/15 bg-[#12364c] p-4">
         <div className="mb-3 flex items-center justify-between">
           <p className="text-sm text-white">Connected Documents</p>
-          <button className="rounded-lg bg-cyan-300/25 px-3 py-2 text-sm" onClick={triggerPull}>
+          <Link href="/dashboard/settings/mock-pull" className="rounded-lg bg-cyan-300/25 px-3 py-2 text-sm">
             Run Weekly Pull Now
-          </button>
+          </Link>
         </div>
 
         <form onSubmit={onSubmit} className="grid gap-2 md:grid-cols-5">
@@ -101,9 +96,9 @@ export function SettingsView() {
             <option value="google_docs">Google Doc</option>
             <option value="google_sheets">Google Sheet</option>
           </select>
-          <button type="submit" className="rounded-lg bg-cyan-300/25 px-3 py-2 text-sm">
+          <Link href="/dashboard/settings/mock-save" className="rounded-lg bg-cyan-300/25 px-3 py-2 text-center text-sm">
             Save
-          </button>
+          </Link>
         </form>
 
         <div className="mt-4 space-y-2">
