@@ -63,6 +63,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </svg>
 
       <div className="relative mx-auto flex min-h-[92vh] w-full max-w-[1260px] overflow-hidden rounded-2xl border border-white/15 bg-[linear-gradient(120deg,rgba(8,28,44,0.96)_0%,rgba(11,31,49,0.98)_48%,rgba(6,25,40,0.96)_100%)] shadow-[0_28px_90px_rgba(0,0,0,0.38)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_53%_44%,rgba(86,193,217,0.1)_0%,transparent_42%)]" />
         <Navbar />
         <main className="flex-1 overflow-y-auto p-6 md:p-8">
           {children}

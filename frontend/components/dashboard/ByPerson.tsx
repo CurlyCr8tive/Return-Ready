@@ -27,7 +27,7 @@ export function ByPerson() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         {people.map((person) => (
-          <article key={person.person} className="rounded-2xl border border-white/15 bg-[#12364c] p-4">
+          <article key={person.person} className="dashboard-card rounded-2xl p-4">
             <h3 className="text-lg text-white">{person.person}</h3>
             <p className="mt-3 text-xs uppercase tracking-[0.14em] text-cyan-200">Flags</p>
             <ul className="mt-1 space-y-1 text-sm text-slate-100">

@@ -46,22 +46,22 @@ export function SettingsView() {
         <p className="mt-2 text-sm text-slate-300">Manage connected team docs and optional management tier setup.</p>
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-[#12364c] p-4">
+      <div className="dashboard-card rounded-2xl p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-sm text-white">Management Tier</p>
             <p className="text-xs text-slate-300">Optional Google OAuth layer for Joanna management docs.</p>
           </div>
-          <Link href="/dashboard/settings/mock-management" className="rounded-lg bg-cyan-300/25 px-3 py-2 text-sm">
+          <Link href="/dashboard/settings/mock-management" className="dashboard-button rounded-lg px-3 py-2 text-sm">
             {managementEnabled ? 'Disable' : 'Enable'}
           </Link>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-[#12364c] p-4">
+      <div className="dashboard-card rounded-2xl p-4">
         <div className="mb-3 flex items-center justify-between">
           <p className="text-sm text-white">Connected Documents</p>
-          <Link href="/dashboard/settings/mock-pull" className="rounded-lg bg-cyan-300/25 px-3 py-2 text-sm">
+          <Link href="/dashboard/settings/mock-pull" className="dashboard-button rounded-lg px-3 py-2 text-sm">
             Run Weekly Pull Now
           </Link>
         </div>
@@ -96,7 +96,7 @@ export function SettingsView() {
             <option value="google_docs">Google Doc</option>
             <option value="google_sheets">Google Sheet</option>
           </select>
-          <Link href="/dashboard/settings/mock-save" className="rounded-lg bg-cyan-300/25 px-3 py-2 text-center text-sm">
+          <Link href="/dashboard/settings/mock-save" className="dashboard-button rounded-lg px-3 py-2 text-center text-sm">
             Save
           </Link>
         </form>

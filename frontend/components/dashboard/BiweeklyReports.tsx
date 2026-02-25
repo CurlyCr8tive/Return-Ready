@@ -27,7 +27,7 @@ export function BiweeklyReports() {
         </div>
         <Link
           href="/dashboard/biweekly/mock-generated"
-          className="rounded-xl bg-cyan-300/25 px-4 py-2 text-sm text-white hover:bg-cyan-300/35"
+          className="dashboard-button rounded-xl px-4 py-2 text-sm"
         >
           Generate Now
         </Link>
@@ -37,7 +37,7 @@ export function BiweeklyReports() {
 
       <div className="space-y-3">
         {reports.map((report, idx) => (
-          <article key={`${report.period_start}-${report.period_end}-${idx}`} className="rounded-2xl border border-white/15 bg-[#12364c]">
+          <article key={`${report.period_start}-${report.period_end}-${idx}`} className="dashboard-card rounded-2xl">
             <button
               className="flex w-full items-center justify-between px-4 py-3 text-left"
               onClick={() => setExpanded((prev) => ({ ...prev, [idx]: !prev[idx] }))}

@@ -91,6 +91,51 @@ export const mockDigests: AIDigest[] = [
     week_start: '2026-02-16',
     week_end: '2026-02-22',
     sections: {
+      top_developments: [
+        {
+          headline: 'Major model vendors launched faster enterprise APIs',
+          description:
+            'Two providers announced lower-latency endpoints designed for workflow tools. This improves real-time assistant experiences and reduces response delays.',
+          url: 'https://example.com/ai-workforce-report',
+        },
+        {
+          headline: 'AI hiring rose for operations and workflow roles',
+          description:
+            'Companies increased postings focused on applied AI in business operations. Demand is shifting from research-heavy roles to practical implementation roles.',
+          url: 'https://example.com/ai-hiring-trends',
+        },
+        {
+          headline: 'Workforce organizations expanded AI coaching pilots',
+          description:
+            'Several organizations announced AI-enabled learner support pilots. Early programs emphasize human-in-the-loop coaching and measurable completion outcomes.',
+          url: 'https://example.com/ai-coaching-pilots',
+        },
+      ],
+      funding_snapshot: {
+        top_rounds: [
+          'Adept raised a late-stage round for enterprise workflow agents.',
+          'Perplexity closed additional growth funding tied to product expansion.',
+          'Two vertical AI startups secured Series A rounds in healthcare and legal operations.',
+        ],
+        sectors: [
+          'Enterprise copilots',
+          'Workflow automation',
+          'Vertical AI SaaS',
+        ],
+        market_direction: [
+          'Investors are prioritizing products with clear enterprise adoption and near-term revenue.',
+          'Capital is shifting from generalized AI hype toward applied, workflow-specific platforms.',
+        ],
+        url: 'https://example.com/ai-funding-weekly',
+      },
+      market_direction_signals: [
+        'Enterprise AI spending is moving toward operational efficiency tools with measurable outcomes.',
+        'Teams are consolidating around fewer, higher-trust AI vendors for core workflow integrations.',
+      ],
+      digest_meta: {
+        sources_analyzed: 18,
+        reading_time_min: 4,
+      },
       what_happened_this_week: [
         'Two major model providers released lower-latency enterprise APIs.',
         'AI hiring demand rose in operations + data workflow roles.',
