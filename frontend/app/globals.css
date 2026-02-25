@@ -1,0 +1,42 @@
+/* frontend/app/globals.css */
+/* Global styles for Return Ready / Connection OS */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Google Fonts — DM Sans + JetBrains Mono */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    --navy:      #1B2A4A;
+    --blue:      #2E5FA3;
+    --midblue:   #4A7FC1;
+    --lightblue: #D6E4F7;
+    --accent:    #00A86B;
+    --orange:    #E07B39;
+    --lightgray: #F4F6F9;
+    --medgray:   #E2E6ED;
+    --gray:      #5A6475;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply bg-lightgray font-sans text-navy;
+  }
+
+  h1, h2, h3, h4 {
+    @apply text-navy font-semibold;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
