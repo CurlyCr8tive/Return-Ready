@@ -1,13 +1,18 @@
 import resend
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 from supabase import create_client
 
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 resend.api_key = os.environ.get("RESEND_API_KEY")
 
-supabase = create_client(
-    os.environ.get("SUPABASE_URL"),
-    os.environ.get("SUPABASE_SERVICE_KEY")
-)
+def get_supabase():
+    supabase_url = os.environ.get("SUPABASE_URL")
+    supabase_key = os.environ.get("SUPABASE_SERVICE_KEY")
+    if not supabase_url or not supabase_key:
+        raise RuntimeError("Missing SUPABASE_URL or SUPABASE_SERVICE_KEY in backend/.env")
+    return create_client(supabase_url, supabase_key)
 
 
 def build_email_html(digest: dict) -> str:
@@ -167,6 +172,8 @@ async def send_digest_email() -> dict:
     Fetches latest digest from Supabase
     and sends as HTML email via Resend.
     """
+
+    supabase = get_supabase()
 
     # Get latest digest
     result = supabase.table("digests") \
