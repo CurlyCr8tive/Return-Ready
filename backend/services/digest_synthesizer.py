@@ -87,7 +87,10 @@ Return JSON only. No markdown. No preamble.
   "jobs_and_hiring": {{
     "summary": "2-3 sentences on the AI jobs market this week.",
     "key_insights": [
-      "Specific observation — name companies and roles where possible"
+      {{
+        "insight": "Specific observation — name companies and roles where possible",
+        "url": "URL from the source news item this insight came from, or null"
+      }}
     ]
   }},
 
@@ -177,6 +180,7 @@ async def generate_digest(week_start: date) -> dict:
                 {
                     "insight": trim(j.get("insight", ""), 200),
                     "source": j.get("source", ""),
+                    "url": j.get("url"),
                 }
                 for j in data.get("jobs_and_hiring", [])[:3]
             ],

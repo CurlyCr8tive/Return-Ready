@@ -38,10 +38,10 @@ export function SourcesPanel({ digest }: { digest: Pick<Digest,
     },
     {
       label: 'Jobs & Hiring',
-      items: (digest.jobs_and_hiring?.key_insights ?? []).map(insight => ({
-        title: insight,
+      items: (digest.jobs_and_hiring?.key_insights ?? []).map(item => ({
+        title: typeof item === 'string' ? item : item.insight,
         pub: '',
-        url: null,
+        url: typeof item === 'string' ? null : (item.url ?? null),
       })),
     },
     digest.featured_resource

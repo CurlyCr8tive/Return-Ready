@@ -46,7 +46,7 @@ export type Digest = {
   }>
   jobs_and_hiring: {
     summary: string
-    key_insights: string[]
+    key_insights: Array<{ insight: string; url: string | null }>
   }
   featured_resource: {
     title: string

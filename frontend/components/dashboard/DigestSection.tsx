@@ -124,14 +124,25 @@ export function JobsSection({ data }: { data: Digest['jobs_and_hiring'] }) {
         Jobs &amp; Skills in Demand
       </h2>
       <p className="text-sm text-textmuted leading-relaxed mb-4">{data.summary}</p>
-      <ul className="space-y-2">
-        {data.key_insights.map((insight, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-textprimary/80">
+      <div className="space-y-2">
+        {data.key_insights.map((item, i) => (
+          <div key={i} className="flex items-start gap-2 text-sm text-textprimary/80">
             <span className="text-gold mt-0.5 flex-shrink-0">—</span>
-            {insight}
-          </li>
+            {item.url ? (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gold hover:underline transition"
+              >
+                {item.insight}
+              </a>
+            ) : (
+              item.insight
+            )}
+          </div>
         ))}
-      </ul>
+      </div>
     </section>
   )
 }

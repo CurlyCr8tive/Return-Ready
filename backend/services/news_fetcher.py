@@ -71,7 +71,8 @@ Return as JSON only. No markdown. No preamble.
   "jobs_and_hiring": [
     {{
       "insight": "Specific observation",
-      "source": "Publication name"
+      "source": "Publication name",
+      "url": "Exact URL from scraped data for this item, or null"
     }}
   ],
   "featured_resource": {{
@@ -153,7 +154,8 @@ Return as JSON only. No markdown. No preamble.
   "jobs_and_hiring": [
     {
       "insight": "Specific observation",
-      "source": "Where this comes from"
+      "source": "Where this comes from",
+      "url": "Direct article permalink about this jobs item, or null"
     }
   ],
   "featured_resource": {
