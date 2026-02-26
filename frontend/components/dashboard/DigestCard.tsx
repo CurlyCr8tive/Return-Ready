@@ -1,0 +1,59 @@
+import Link from 'next/link'
+import type { DigestListItem } from '@/lib/api'
+
+interface DigestCardProps {
+  digest: DigestListItem
+  hero?: boolean
+}
+
+export function DigestCard({ digest, hero = false }: DigestCardProps) {
+  const dateRange = `${digest.week_start} – ${digest.week_end}`
+
+  if (hero) {
+    return (
+      <div className="bg-navylight border border-border rounded-xl p-6 md:p-8">
+        <p className="text-xs font-mono text-textmuted mb-3">
+          Week {digest.week_number} of 12 · {dateRange}
+        </p>
+        <p className="text-textprimary text-base md:text-lg leading-relaxed mb-6">
+          {digest.week_summary || 'Digest generating…'}
+        </p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4 text-xs text-textmuted font-mono">
+            <span>{digest.external_source_count} sources</span>
+            {!digest.is_read && (
+              <span className="px-2 py-0.5 bg-gold/10 text-gold rounded-full">New</span>
+            )}
+          </div>
+          <Link
+            href={`/digest/${digest.id}`}
+            className="text-sm font-medium text-gold hover:text-gold/80 transition"
+          >
+            Read Full Digest →
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <Link
+      href={`/digest/${digest.id}`}
+      className="block bg-navylight border border-border rounded-lg p-4 hover:border-gold/30 transition"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-mono text-textmuted mb-1">
+            Week {digest.week_number} · {digest.week_start}
+          </p>
+          <p className="text-sm text-textprimary line-clamp-2">
+            {digest.week_summary || 'No summary'}
+          </p>
+        </div>
+        {!digest.is_read && (
+          <span className="flex-shrink-0 w-2 h-2 rounded-full bg-gold mt-1.5" />
+        )}
+      </div>
+    </Link>
+  )
+}

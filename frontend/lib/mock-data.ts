@@ -1,159 +1,177 @@
-import type { AIDigest, PersonSummary, TeamReport } from './api'
+import type { Digest, DigestListItem, DigestStats } from './api'
 
-export const mockOverview = {
-  latest_biweekly: { generated_at: '2026-02-21T14:20:00Z' },
-  latest_monthly: { generated_at: '2026-02-01T13:10:00Z' },
-  report_status: { biweekly_count: 6, monthly_count: 3 },
-  people_tracked: 4,
+// Replace this with real data once the scraper is running.
+// Pages fall back to this when the backend returns null or is unreachable.
+
+export const MOCK_DIGEST: Digest = {
+  id: 'mock-week-1',
+  week_number: 1,
+  week_start: '2025-03-03',
+  week_end: '2025-03-09',
+  week_summary:
+    'OpenAI\'s GPT-4.5 launch dominated headlines alongside a wave of AI hiring announcements from enterprise software companies. The clearest thread across the week: AI is moving decisively from experiment to infrastructure, and organizations that haven\'t yet defined their AI skills strategy are now visibly behind.',
+
+  ai_developments: [
+    {
+      headline: 'OpenAI Releases GPT-4.5 with Improved Reasoning and Instruction-Following',
+      synthesis:
+        'OpenAI shipped GPT-4.5 with significantly better instruction-following, reduced hallucination rates, and a new "structured output" mode that returns reliable JSON. The model is available via API immediately and in ChatGPT Enterprise within days. Early benchmarks show 30% improvement on complex multi-step reasoning tasks compared to GPT-4o.',
+      why_it_matters:
+        'This is the model that will power the next generation of AI-assisted workflows inside companies. Developers building on GPT-4 will upgrade quickly — anything your fellows build or maintain using OpenAI will likely need to be tested against this version.',
+      source: 'OpenAI Blog',
+      url: 'https://openai.com/blog',
+    },
+    {
+      headline: 'Anthropic Expands Claude for Education with New Classroom Tools',
+      synthesis:
+        'Anthropic launched Claude for Education, a suite of tools designed for universities and training programs. Features include citation-aware responses, assignment scaffolding, and a "teach-back" mode where Claude asks learners to explain concepts rather than just answering. Columbia and NYU are among the first institutional partners.',
+      why_it_matters:
+        'This is directly relevant to workforce training organizations. The "teach-back" modality is exactly the kind of pedagogy Pursuit already uses in cohort settings — AI tools that reinforce learning rather than shortcutting it.',
+      source: 'TechCrunch',
+      url: 'https://techcrunch.com',
+    },
+    {
+      headline: 'Google Announces AI-Powered Job Matching Integration in Google for Jobs',
+      synthesis:
+        'Google is rolling out semantic job matching inside Google for Jobs, using AI to surface positions based on demonstrated skills rather than keyword matching. The update also adds "skills gap" labels that show job seekers which listed requirements they\'re most likely to develop quickly. US rollout starts this month.',
+      why_it_matters:
+        'This changes how Pursuit fellows will find jobs. Skills-based matching advantages candidates with project portfolios over keyword-heavy resumes — which is Pursuit\'s model. Worth briefing the placement team before they update job-search coaching materials.',
+      source: 'Google Blog',
+      url: 'https://blog.google',
+    },
+    {
+      headline: 'Salesforce Reports 40% of New Hires in 2025 Will Have AI Specialist Roles',
+      synthesis:
+        'In its annual workforce report, Salesforce projected that 40% of its 2025 hiring will be for AI-specific roles — including AI trainers, prompt engineers, and AI QA specialists — up from 12% in 2023. The company also announced a $500M internal reskilling program for existing employees.',
+      why_it_matters:
+        'Salesforce is a marquee employer in Pursuit\'s network. A 40% shift toward AI roles signals that the skills we\'re training fellows on are on the right path — but the curriculum may need to emphasize AI-adjacent roles (QA, training, evaluation) alongside pure engineering.',
+      source: 'Salesforce Newsroom',
+      url: null,
+    },
+  ],
+
+  slack_highlights: {
+    placeholder: true,
+    message: 'Slack integration coming soon — your team\'s #ai channel will appear here.',
+  },
+
+  pursuit_implications: [
+    {
+      implication:
+        'Update the AI Tools module to include Claude for Education and GPT-4.5 structured outputs — fellows building in these environments will encounter both within 90 days.',
+      reasoning:
+        'Both releases are production-grade tools that employers are already integrating. Fellows who can work with structured outputs and AI-assisted learning environments will be more competitive at placement.',
+      priority: 'HIGH',
+    },
+    {
+      implication:
+        'Brief the placement team on Google\'s skills-based job matching update before the next cohort job search sprint.',
+      reasoning:
+        'Skills-first matching directly advantages Pursuit graduates whose portfolios demonstrate applied competencies. Placement coaches should update job-search guidance to leverage project descriptions over resume keyword stuffing.',
+      priority: 'HIGH',
+    },
+    {
+      implication:
+        'Add AI QA and AI trainer roles to Salesforce employer pipeline conversations this quarter.',
+      reasoning:
+        'Salesforce\'s 40% AI hiring projection includes roles that don\'t require senior engineering experience. These entry and mid-level AI-adjacent positions are a strong fit for Pursuit fellows at 6-12 months post-placement.',
+      priority: 'MEDIUM',
+    },
+    {
+      implication:
+        'Monitor Anthropic\'s Education product for possible partnership or pilot program opportunity.',
+      reasoning:
+        'Anthropic is actively seeking institutional training partners. Pursuit\'s model — project-based, cohort learning for underrepresented adults — is a strong narrative fit for their education mission.',
+      priority: 'WATCH',
+    },
+  ],
+
+  companies_to_watch: [
+    {
+      name: 'Mistral AI',
+      what_they_do: 'European AI lab building open-weight language models',
+      why_watch_now: 'Released Mistral Large 2 this week — competitive with GPT-4o at lower cost, with stronger multilingual support',
+      pursuit_relevance: 'Open-weight models matter for orgs training on proprietary data; strong multilingual models serve diverse learner populations',
+    },
+    {
+      name: 'Coursera',
+      what_they_do: 'Online learning platform with 148M registered learners',
+      why_watch_now: 'Announced AI Skills Index and new employer-sponsored AI credential tracks for workforce programs',
+      pursuit_relevance: 'Coursera is positioning as the default for employer-sponsored upskilling — a potential partner or competitor in the workforce development AI training space',
+    },
+    {
+      name: 'Pave',
+      what_they_do: 'Compensation benchmarking and planning software for HR teams',
+      why_watch_now: 'Raised $110M Series C; adding AI-powered pay equity analysis and bias detection to their platform',
+      pursuit_relevance: 'Tools that surface pay equity issues are relevant to Pursuit\'s employer partnerships and could support fellow salary negotiation coaching',
+    },
+  ],
+
+  jobs_and_hiring: {
+    summary:
+      'AI hiring activity was strong across enterprise software, fintech, and education technology this week. Demand is split between deep technical roles (ML engineers, AI researchers) and a fast-growing tier of AI-adjacent roles: prompt engineers, AI content reviewers, model trainers, and AI product managers. The latter category is increasingly accessible to bootcamp graduates.',
+    key_insights: [
+      'Microsoft posted 340 AI-related roles this week, heaviest in Azure AI and Copilot product teams — mostly mid-level, 3-5 years experience',
+      'Duolingo, Khan Academy, and Chegg are all hiring AI curriculum specialists — roles that blend teaching background with basic prompting skills',
+      'Two Pursuit alumni employers (Peloton, Etsy) posted AI QA roles this week — flag for placement team to surface to recent graduates',
+      'Median salary for "AI Engineer" titles in NYC rose to $178K according to Levels.fyi data published this week',
+    ],
+  },
+
+  featured_resource: {
+    title: 'The Workforce Disruption Playbook: How Leading Nonprofits Are Responding to AI',
+    publication: 'Brookings Institution',
+    url: 'https://brookings.edu',
+    why_joanna: 'Directly benchmarks workforce development organizations on AI curriculum integration — Pursuit is cited in the report as a model for project-based AI training.',
+    format: 'Report',
+    read_time: '14 min',
+  },
+
+  external_source_count: 12,
+  slack_message_count: 0,
+  is_read: false,
+  generated_at: '2025-03-03T07:42:00Z',
 }
 
-export const mockBiweeklyReports: TeamReport[] = [
+export const MOCK_DIGEST_LIST: DigestListItem[] = [
   {
-    period_start: '2026-02-08',
-    period_end: '2026-02-21',
-    report_type: 'biweekly',
-    sections: {
-      biweekly_snapshot: 'Attendance and admissions held steady; volunteer activity dipped slightly in week two.',
-      kpi_highlights_by_person: {
-        Stef: 'Pathfinder usage +12%; jobs placements stable.',
-        Greg: 'Volunteer pipeline slowed after one partner pause.',
-        Afiya: 'L1 cohort retention improved week-over-week.',
-        Francis: 'Admissions conversion up 4 points.',
-      },
-      patterns_and_trends: 'L3+ progression improved where attendance support was active.',
-      risks_and_flags: 'Volunteer backlog may impact April events if unresolved.',
-      wins: 'Community development events exceeded attendance targets.',
-    },
-    generated_at: '2026-02-21T14:20:00Z',
+    id: 'mock-week-1',
+    week_number: 1,
+    week_start: '2025-03-03',
+    week_end: '2025-03-09',
+    week_summary: MOCK_DIGEST.week_summary,
+    external_source_count: 12,
+    is_read: false,
+    generated_at: '2025-03-03T07:42:00Z',
   },
   {
-    period_start: '2026-01-25',
-    period_end: '2026-02-07',
-    report_type: 'biweekly',
-    sections: {
-      biweekly_snapshot: 'Core KPIs stable with stronger admissions momentum.',
-      kpi_highlights_by_person: { Stef: 'L3+ up 2 learners', Francis: 'Admissions +9%' },
-      patterns_and_trends: 'Job outcomes correlating with higher pathfinder completion.',
-      risks_and_flags: 'One partner response delay on hiring cohort.',
-      wins: 'Strong start to month across team reporting.',
-    },
-    generated_at: '2026-02-07T14:20:00Z',
+    id: 'mock-week-0b',
+    week_number: 2,
+    week_start: '2025-03-10',
+    week_end: '2025-03-16',
+    week_summary:
+      'Meta\'s open-source Llama 4 release set off a new round of competition in the AI model market. Meanwhile, the White House issued updated AI workplace guidance affecting federal contractors — relevant to Pursuit\'s public-sector employer relationships.',
+    external_source_count: 9,
+    is_read: true,
+    generated_at: '2025-03-10T07:38:00Z',
   },
-]
-
-export const mockMonthlyReports: TeamReport[] = [
   {
-    period_start: '2026-02-01',
-    period_end: '2026-02-28',
-    report_type: 'monthly',
-    month: 2,
-    year: 2026,
-    sections: {
-      month_in_summary: 'February was operationally stable with moderate growth in admissions and learner progression.',
-      kpi_performance_by_person: {
-        Stef: 'Attendance stable; pathfinder and L3+ up.',
-        Greg: 'Volunteer volume down; quality of placements steady.',
-        Afiya: 'Cohort completion improved.',
-        Francis: 'Admissions and community output rose.',
-      },
-      what_improved: 'L1-to-L3 progression and admissions conversion.',
-      what_needs_attention: 'Volunteer pipeline continuity and one delayed employer partner.',
-      heading_into_next_month: 'Protect gains in progression while rebuilding volunteer funnel.',
-    },
-    generated_at: '2026-03-01T08:00:00Z',
+    id: 'mock-week-0c',
+    week_number: 3,
+    week_start: '2025-03-17',
+    week_end: '2025-03-23',
+    week_summary:
+      'A quiet week in model releases, but a loud one in regulation: the EU AI Act\'s first compliance deadlines hit, affecting any US company with EU operations. Three Pursuit employer partners are on the affected list.',
+    external_source_count: 7,
+    is_read: true,
+    generated_at: '2025-03-17T07:51:00Z',
   },
 ]
 
-export const mockPeople: PersonSummary[] = [
-  {
-    person: 'Stef',
-    kpi_trend: [
-      { week_start: '2026-02-03', kpi_name: 'attendance', kpi_value: 92 },
-      { week_start: '2026-02-10', kpi_name: 'pathfinder use', kpi_value: 78 },
-      { week_start: '2026-02-17', kpi_name: 'L3+', kpi_value: 31 },
-    ],
-    flags: [{ week_start: '2026-02-10', flag: 'Two learners at risk of dropping.' }],
-    reported_items: [{ week_start: '2026-02-17', notes: 'Weekly coaching cadence improved follow-through.' }],
-  },
-  {
-    person: 'Greg',
-    kpi_trend: [
-      { week_start: '2026-02-03', kpi_name: 'volunteers', kpi_value: 41 },
-      { week_start: '2026-02-10', kpi_name: 'volunteers', kpi_value: 37 },
-    ],
-    flags: [{ week_start: '2026-02-10', flag: 'Partner pause reduced volunteer intake.' }],
-    reported_items: [{ week_start: '2026-02-10', notes: 'Outreach sprint planned to recover pipeline.' }],
-  },
-]
-
-export const mockDigests: AIDigest[] = [
-  {
-    week_start: '2026-02-16',
-    week_end: '2026-02-22',
-    sections: {
-      top_developments: [
-        {
-          headline: 'Major model vendors launched faster enterprise APIs',
-          description:
-            'Two providers announced lower-latency endpoints designed for workflow tools. This improves real-time assistant experiences and reduces response delays.',
-          url: 'https://example.com/ai-workforce-report',
-        },
-        {
-          headline: 'AI hiring rose for operations and workflow roles',
-          description:
-            'Companies increased postings focused on applied AI in business operations. Demand is shifting from research-heavy roles to practical implementation roles.',
-          url: 'https://example.com/ai-hiring-trends',
-        },
-        {
-          headline: 'Workforce organizations expanded AI coaching pilots',
-          description:
-            'Several organizations announced AI-enabled learner support pilots. Early programs emphasize human-in-the-loop coaching and measurable completion outcomes.',
-          url: 'https://example.com/ai-coaching-pilots',
-        },
-      ],
-      funding_snapshot: {
-        top_rounds: [
-          'Adept raised a late-stage round for enterprise workflow agents.',
-          'Perplexity closed additional growth funding tied to product expansion.',
-          'Two vertical AI startups secured Series A rounds in healthcare and legal operations.',
-        ],
-        sectors: [
-          'Enterprise copilots',
-          'Workflow automation',
-          'Vertical AI SaaS',
-        ],
-        market_direction: [
-          'Investors are prioritizing products with clear enterprise adoption and near-term revenue.',
-          'Capital is shifting from generalized AI hype toward applied, workflow-specific platforms.',
-        ],
-        url: 'https://example.com/ai-funding-weekly',
-      },
-      market_direction_signals: [
-        'Enterprise AI spending is moving toward operational efficiency tools with measurable outcomes.',
-        'Teams are consolidating around fewer, higher-trust AI vendors for core workflow integrations.',
-      ],
-      digest_meta: {
-        sources_analyzed: 18,
-        reading_time_min: 4,
-      },
-      what_happened_this_week: [
-        'Two major model providers released lower-latency enterprise APIs.',
-        'AI hiring demand rose in operations + data workflow roles.',
-        'More workforce orgs announced AI-enabled coaching pilots.',
-      ],
-      what_it_means_for_pursuit: 'Opportunity to expand AI-readiness training for career services and learner support teams.',
-      who_is_hiring_in_ai: ['ServiceNow', 'Datadog', 'Scale AI'],
-      companies_to_watch: ['Anthropic', 'Perplexity', 'Cognition'],
-      one_thing_to_read: { title: 'State of Applied AI in Workforce Development', url: 'https://example.com/ai-workforce-report' },
-    },
-    source_links: ['https://example.com/ai-workforce-report', 'https://example.com/ai-hiring-trends'],
-    generated_at: '2026-02-22T17:00:00Z',
-  },
-]
-
-export const mockDocuments = [
-  { owner_name: 'Stef', title: 'Stef Weekly KPI', source_type: 'google_docs' },
-  { owner_name: 'Greg', title: 'Volunteer Tracker Standup', source_type: 'google_sheets' },
-  { owner_name: 'Afiya', title: 'L1 Cohort Weekly', source_type: 'google_docs' },
-  { owner_name: 'Francis', title: 'Admissions + Community KPI', source_type: 'google_docs' },
-]
+export const MOCK_STATS: DigestStats = {
+  latest_week_number: 1,
+  total_digests_generated: 3,
+  total_unread: 1,
+  last_generated: '2025-03-03T07:42:00Z',
+  next_digest: '2025-03-24',
+}

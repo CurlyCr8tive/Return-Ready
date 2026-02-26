@@ -1,94 +1,87 @@
 import os
-from typing import Any
+from typing import Any, Optional
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from supabase import Client, create_client
+from supabase import create_client
 
 router = APIRouter()
 
 
-def get_supabase() -> Client:
+def get_supabase():
     return create_client(
-        os.getenv("SUPABASE_URL", ""),
-        os.getenv("SUPABASE_SERVICE_KEY", ""),
+        os.environ.get("SUPABASE_URL", ""),
+        os.environ.get("SUPABASE_SERVICE_KEY", ""),
     )
 
 
-class ConnectedDocumentPayload(BaseModel):
-    owner_name: str
-    source_type: str
-    doc_type: str
-    doc_id: str
-    title: str
-    active: bool = True
-    management_tier: bool = False
+class SettingsUpdate(BaseModel):
+    pursuit_context: Optional[str] = None
+    email_enabled: Optional[bool] = None
+    email_send_day: Optional[str] = None
+    email_send_time: Optional[str] = None
+    external_news_enabled: Optional[bool] = None
 
 
-class ManagementTogglePayload(BaseModel):
-    enabled: bool
-
-
-@router.get("/documents")
-async def list_documents() -> dict[str, list[dict[str, Any]]]:
+@router.get("")
+async def get_settings() -> dict[str, Any]:
+    """Returns current settings row."""
     supabase = get_supabase()
-    rows = supabase.table("connected_documents").select("*").order("owner_name").execute().data or []
-    return {"documents": rows}
 
-
-@router.post("/documents")
-async def upsert_document(payload: ConnectedDocumentPayload) -> dict[str, Any]:
-    supabase = get_supabase()
-    row = payload.model_dump()
-
-    existing = (
-        supabase.table("connected_documents")
-        .select("id")
-        .eq("doc_id", payload.doc_id)
+    result = supabase.table("settings") \
+        .select("*") \
+        .limit(1) \
         .execute()
-    )
 
-    if existing.data:
-        result = (
-            supabase.table("connected_documents")
-            .update(row)
-            .eq("id", existing.data[0]["id"])
-            .execute()
-        )
-        return {"document": result.data[0] if result.data else row}
+    if not result.data:
+        raise HTTPException(status_code=404, detail="No settings found")
 
-    result = supabase.table("connected_documents").insert(row).execute()
-    return {"document": result.data[0] if result.data else row}
+    return {"settings": result.data[0]}
 
 
-@router.get("/management")
-async def get_management_settings() -> dict[str, Any]:
-    supabase = get_supabase()
-    rows = supabase.table("app_settings").select("setting_key, setting_value").execute().data or []
-    by_key = {r["setting_key"]: r.get("setting_value") for r in rows}
-
-    return {
-        "management_tier_enabled": bool(by_key.get("management_tier_enabled", False)),
-        "management_google_connected": bool(by_key.get("management_google_connected", False)),
-    }
-
-
-@router.post("/management/toggle")
-async def toggle_management(payload: ManagementTogglePayload) -> dict[str, Any]:
+@router.patch("")
+async def update_settings(payload: SettingsUpdate) -> dict[str, Any]:
+    """Updates settings fields."""
     supabase = get_supabase()
 
-    existing = (
-        supabase.table("app_settings")
-        .select("id")
-        .eq("setting_key", "management_tier_enabled")
+    updates = {k: v for k, v in payload.model_dump().items() if v is not None}
+    updates["updated_at"] = "now()"
+
+    existing = supabase.table("settings").select("id").limit(1).execute()
+
+    if not existing.data:
+        raise HTTPException(status_code=404, detail="No settings row found")
+
+    result = supabase.table("settings") \
+        .update(updates) \
+        .eq("id", existing.data[0]["id"]) \
         .execute()
-    )
 
-    row = {"setting_key": "management_tier_enabled", "setting_value": payload.enabled}
+    return {"settings": result.data[0] if result.data else updates}
 
-    if existing.data:
-        supabase.table("app_settings").update(row).eq("id", existing.data[0]["id"]).execute()
-    else:
-        supabase.table("app_settings").insert(row).execute()
 
-    return {"management_tier_enabled": payload.enabled}
+@router.post("/send-test-email")
+async def send_test_email() -> dict[str, Any]:
+    """Sends latest digest to Joanna immediately."""
+    from services.email_sender import send_digest_email
+
+    result = await send_digest_email()
+
+    if not result["success"]:
+        raise HTTPException(status_code=500, detail=result.get("error", "Email send failed"))
+
+    return result
+
+
+@router.get("/email-log")
+async def get_email_log() -> dict[str, Any]:
+    """Returns last 10 email sends."""
+    supabase = get_supabase()
+
+    result = supabase.table("email_log") \
+        .select("id, week_number, subject, sent_to, sent_at, status") \
+        .order("sent_at", desc=True) \
+        .limit(10) \
+        .execute()
+
+    return {"email_log": result.data or []}

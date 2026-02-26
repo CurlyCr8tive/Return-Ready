@@ -2,10 +2,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:800
 
 async function fetchAPI<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${BACKEND_URL}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
+    headers: { 'Content-Type': 'application/json', ...options.headers },
     ...options,
     cache: 'no-store',
   })
@@ -18,124 +15,106 @@ async function fetchAPI<T>(path: string, options: RequestInit = {}): Promise<T> 
   return response.json() as Promise<T>
 }
 
-export type TeamReport = {
-  id?: string
-  period_start: string
-  period_end: string
-  report_type: 'biweekly' | 'monthly'
-  month?: number
-  year?: number
-  sections: Record<string, unknown>
-  generated_at: string
-}
-
-export type PersonSummary = {
-  person: string
-  kpi_trend: Array<{ week_start: string; kpi_name: string; kpi_value: string | number | null }>
-  flags: Array<{ week_start: string; flag: string }>
-  reported_items: Array<{ week_start: string; notes: string }>
-}
-
-export type AIDigest = {
-  id?: string
+export type Digest = {
+  id: string
+  week_number: number
   week_start: string
   week_end: string
-  sections: Record<string, unknown>
-  source_links: string[]
+  week_summary: string
+  ai_developments: Array<{
+    headline: string
+    synthesis: string
+    why_it_matters: string
+    source: string
+    url: string | null
+  }>
+  slack_highlights: {
+    placeholder: boolean
+    message: string
+  }
+  pursuit_implications: Array<{
+    implication: string
+    reasoning: string
+    priority: 'HIGH' | 'MEDIUM' | 'WATCH'
+  }>
+  companies_to_watch: Array<{
+    name: string
+    what_they_do: string
+    why_watch_now: string
+    pursuit_relevance: string
+  }>
+  jobs_and_hiring: {
+    summary: string
+    key_insights: string[]
+  }
+  featured_resource: {
+    title: string
+    publication: string
+    url: string | null
+    why_joanna: string
+    format: string
+    read_time: string
+  }
+  external_source_count: number
+  slack_message_count: number
+  is_read: boolean
   generated_at: string
 }
 
-export const dashboardAPI = {
-  getOverview: () => fetchAPI<{
-    latest_biweekly: TeamReport | null
-    latest_monthly: TeamReport | null
-    report_status: { biweekly_count: number; monthly_count: number }
-    people_tracked: number
-  }>('/team-intel/overview'),
-
-  getBiweekly: () => fetchAPI<{ reports: TeamReport[] }>('/team-intel/biweekly'),
-  generateBiweekly: () =>
-    fetchAPI<TeamReport>('/team-intel/biweekly/generate', { method: 'POST' }),
-
-  getMonthly: () => fetchAPI<{ reports: TeamReport[] }>('/team-intel/monthly'),
-  generateMonthly: () =>
-    fetchAPI<TeamReport>('/team-intel/monthly/generate', { method: 'POST' }),
-
-  getByPerson: () => fetchAPI<{ people: PersonSummary[] }>('/team-intel/by-person'),
-
-  runDataPull: () => fetchAPI<Record<string, unknown>>('/team-intel/pull/run', { method: 'POST' }),
+export type DigestListItem = {
+  id: string
+  week_number: number
+  week_start: string
+  week_end: string
+  week_summary: string
+  external_source_count: number
+  is_read: boolean
+  generated_at: string
 }
 
-export const aiDigestAPI = {
-  list: () => fetchAPI<{ digests: AIDigest[] }>('/ai-digest/'),
-  generate: () => fetchAPI<AIDigest>('/ai-digest/generate', { method: 'POST' }),
+export type DigestStats = {
+  latest_week_number: number
+  total_digests_generated: number
+  total_unread: number
+  last_generated: string | null
+  next_digest: string
+}
+
+export type Settings = {
+  id: string
+  pursuit_context: string
+  external_news_enabled: boolean
+  email_enabled: boolean
+  email_send_day: string
+  email_send_time: string
+  slack_connected: boolean
+  slack_channel: string
+  slack_last_synced: string | null
+  updated_at: string
+}
+
+export const digestAPI = {
+  getLatest: () => fetchAPI<{ digest: Digest | null }>('/digest/latest'),
+  getAll: () => fetchAPI<{ digests: DigestListItem[] }>('/digest/all'),
+  getStats: () => fetchAPI<DigestStats>('/digest/stats'),
+  getById: (id: string) => fetchAPI<{ digest: Digest }>(`/digest/${id}`),
+  generate: (weekStart?: string) =>
+    fetchAPI<{ success: boolean; digest_id: string; week_number: number }>('/digest/generate', {
+      method: 'POST',
+      body: JSON.stringify(weekStart ? { week_start: weekStart } : {}),
+    }),
 }
 
 export const settingsAPI = {
-  listDocuments: () =>
-    fetchAPI<{ documents: Array<Record<string, unknown>> }>('/settings/documents'),
-
-  upsertDocument: (payload: {
-    owner_name: string
-    source_type: string
-    doc_type: string
-    doc_id: string
-    title: string
-    active?: boolean
-    management_tier?: boolean
-  }) =>
-    fetchAPI<{ document: Record<string, unknown> }>('/settings/documents', {
-      method: 'POST',
+  get: () => fetchAPI<{ settings: Settings }>('/settings'),
+  update: (payload: Partial<Settings>) =>
+    fetchAPI<{ settings: Settings }>('/settings', {
+      method: 'PATCH',
       body: JSON.stringify(payload),
     }),
-
-  getManagement: () =>
-    fetchAPI<{ management_tier_enabled: boolean; management_google_connected: boolean }>(
-      '/settings/management'
+  sendTestEmail: () => fetchAPI<{ success: boolean; email_id: string }>('/settings/send-test-email', { method: 'POST' }),
+  getEmailLog: () =>
+    fetchAPI<{ email_log: Array<{ id: string; week_number: number; subject: string; sent_to: string; sent_at: string; status: string }> }>(
+      '/settings/email-log'
     ),
-
-  toggleManagement: (enabled: boolean) =>
-    fetchAPI<{ management_tier_enabled: boolean }>('/settings/management/toggle', {
-      method: 'POST',
-      body: JSON.stringify({ enabled }),
-    }),
-}
-
-// Legacy API adapters kept to avoid breaking existing staff-side screens
-// while the product pivots to the Joanna dashboard model.
-export const formsAPI = {
-  validate: async (_token: string) => ({
-    valid: false,
-    already_submitted: false,
-    staff_email: '',
-    staff_name: '',
-    month: '',
-    year: new Date().getFullYear(),
-  }),
-  submit: async (_data?: unknown) => ({ success: false, message: 'Forms workflow deprecated in this pivot.' }),
-  sendForms: async (_month?: string) => ({ sent: [], errors: [], total: 0 }),
-  getSubmissions: async (_month?: string, _year?: number) => ({ submissions: [], count: 0 }),
-  getStatus: async (_month?: string, _year?: number) => ({
-    month: '',
-    year: new Date().getFullYear(),
-    total: 0,
-    submission_count: 0,
-    submitted: [],
-    pending: [],
-  }),
-}
-
-export const synthesisAPI = {
-  generate: async (_month: string) => ({}),
-  getReport: async (_month: string, _year?: number) => ({}),
-  getStatus: async (_year?: number) => ({ year: new Date().getFullYear(), statuses: {} as Record<string, unknown> }),
-}
-
-export const botAPI = {
-  askTeam: async (_question?: string, _staffEmail?: string, _staffName?: string) => ({
-    answer: 'Team bot has moved to the new dashboard roadmap.',
-    sources: [],
-  }),
-  getAllHistory: async () => ({ staff: [] }),
-  getStaffHistory: async (_staffEmail?: string) => ({ history: [], total: 0 }),
 }

@@ -1,56 +1,29 @@
-// frontend/components/ui/Badge.tsx
-// Classification and signal badge components
-// Used in Priority Inbox to show item classification and signal strength
-
 import { clsx } from 'clsx'
 
-type Classification = 'Decision' | 'Risk' | 'Update' | 'Win' | 'Escalation' | 'Noise'
-type Signal = 'HIGH' | 'MEDIUM' | 'LOW' | 'NOISE'
+type Priority = 'HIGH' | 'MEDIUM' | 'WATCH'
 
-interface BadgeProps {
-  label: string
-  className?: string
+const priorityStyles: Record<Priority, string> = {
+  HIGH: 'bg-red-500/10 text-red-400 border border-red-500/20',
+  MEDIUM: 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20',
+  WATCH: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
 }
 
-const classificationColors: Record<Classification, string> = {
-  Decision: 'bg-blue/10 text-blue',
-  Risk: 'bg-orange/10 text-orange',
-  Update: 'bg-slate-100 text-gray',
-  Win: 'bg-accent/10 text-accent',
-  Escalation: 'bg-red-100 text-red-600',
-  Noise: 'bg-slate-100 text-slate-400',
-}
-
-const signalColors: Record<Signal, string> = {
-  HIGH: 'bg-red-100 text-red-600',
-  MEDIUM: 'bg-orange/10 text-orange',
-  LOW: 'bg-slate-100 text-gray',
-  NOISE: 'bg-slate-50 text-slate-300',
-}
-
-export function ClassificationBadge({ label, className }: BadgeProps) {
+export function PriorityBadge({ priority }: { priority: Priority }) {
   return (
     <span
       className={clsx(
-        'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-        classificationColors[label as Classification] ?? 'bg-slate-100 text-gray',
-        className
+        'inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold font-mono tracking-wide',
+        priorityStyles[priority] ?? 'bg-white/10 text-textmuted'
       )}
     >
-      {label}
+      {priority}
     </span>
   )
 }
 
-export function SignalBadge({ label, className }: BadgeProps) {
+export function SourceBadge({ label }: { label: string }) {
   return (
-    <span
-      className={clsx(
-        'inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold tracking-wide uppercase',
-        signalColors[label as Signal] ?? 'bg-slate-100 text-gray',
-        className
-      )}
-    >
+    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gold/10 text-gold border border-gold/20">
       {label}
     </span>
   )

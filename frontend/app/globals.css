@@ -1,20 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --navy:      #1B2A4A;
-    --blue:      #2E5FA3;
-    --midblue:   #4A7FC1;
-    --lightblue: #D6E4F7;
-    --accent:    #00A86B;
-    --orange:    #E07B39;
-    --lightgray: #F4F6F9;
-    --medgray:   #E2E6ED;
-    --gray:      #5A6475;
-  }
-
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
@@ -22,106 +12,7 @@
   }
 
   body {
-    @apply bg-lightgray font-sans text-navy;
-    letter-spacing: 0.01em;
+    @apply bg-navy font-sans text-textprimary;
     line-height: 1.5;
-  }
-
-  h1, h2, h3, h4 {
-    @apply text-navy;
-    font-family: 'Space Grotesk', 'Manrope', sans-serif;
-    letter-spacing: 0;
-    line-height: 1.18;
-  }
-
-  p, span, label, button, input, textarea, select {
-    font-family: 'Manrope', sans-serif;
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
-@layer components {
-  .dashboard-card {
-    @apply border border-white/15;
-    background-image:
-      linear-gradient(155deg, rgba(28, 91, 126, 0.36) 0%, rgba(16, 56, 80, 0.28) 58%, rgba(12, 43, 64, 0.24) 100%),
-      linear-gradient(180deg, #133a52 0%, #12364c 100%);
-    box-shadow:
-      0 14px 30px rgba(2, 14, 26, 0.35),
-      inset 0 1px 0 rgba(201, 236, 255, 0.1);
-  }
-
-  .dashboard-card-strong {
-    @apply border border-cyan-100/25;
-    background-image:
-      linear-gradient(160deg, rgba(63, 156, 192, 0.26) 0%, rgba(20, 76, 109, 0.26) 58%, rgba(14, 56, 82, 0.25) 100%),
-      linear-gradient(180deg, #15445e 0%, #12374d 100%);
-    box-shadow:
-      0 18px 34px rgba(2, 13, 24, 0.38),
-      inset 0 1px 0 rgba(223, 246, 255, 0.18);
-  }
-
-  .dashboard-insight-card {
-    @apply border border-cyan-100/25;
-    background-image:
-      radial-gradient(circle at 85% 14%, rgba(115, 234, 240, 0.12) 0%, transparent 34%),
-      linear-gradient(165deg, rgba(35, 118, 153, 0.3) 0%, rgba(15, 61, 90, 0.27) 52%, rgba(12, 48, 75, 0.3) 100%),
-      linear-gradient(180deg, #133b53 0%, #10334b 100%);
-    box-shadow:
-      0 20px 36px rgba(2, 12, 24, 0.42),
-      inset 0 1px 0 rgba(225, 249, 255, 0.2),
-      inset 0 0 24px rgba(104, 218, 233, 0.12);
-  }
-
-  .dashboard-button {
-    @apply border border-white/20 text-white transition;
-    background-image: linear-gradient(160deg, rgba(92, 206, 214, 0.24) 0%, rgba(31, 114, 145, 0.28) 100%);
-    box-shadow:
-      0 8px 20px rgba(1, 13, 24, 0.28),
-      inset 0 1px 0 rgba(206, 248, 255, 0.16);
-  }
-
-  .dashboard-button:hover {
-    background-image: linear-gradient(160deg, rgba(108, 222, 230, 0.3) 0%, rgba(41, 127, 162, 0.34) 100%);
-    box-shadow:
-      0 10px 24px rgba(1, 13, 24, 0.34),
-      inset 0 1px 0 rgba(224, 251, 255, 0.2);
-  }
-
-  .dashboard-button-primary {
-    @apply border border-cyan-100/35 text-white transition;
-    background-image:
-      linear-gradient(165deg, rgba(118, 231, 237, 0.34) 0%, rgba(48, 148, 186, 0.38) 48%, rgba(29, 115, 152, 0.36) 100%);
-    box-shadow:
-      0 12px 24px rgba(1, 13, 24, 0.36),
-      inset 0 1px 0 rgba(233, 252, 255, 0.28);
-  }
-
-  .dashboard-button-primary:hover {
-    background-image:
-      linear-gradient(165deg, rgba(140, 238, 243, 0.4) 0%, rgba(60, 164, 203, 0.44) 48%, rgba(40, 128, 166, 0.42) 100%);
-    box-shadow:
-      0 14px 28px rgba(1, 13, 24, 0.42),
-      inset 0 1px 0 rgba(239, 254, 255, 0.3);
-  }
-
-  .dashboard-button-ghost {
-    @apply border border-white/15 text-cyan-50 transition;
-    background-image: linear-gradient(160deg, rgba(33, 104, 136, 0.2) 0%, rgba(20, 73, 101, 0.2) 100%);
-    box-shadow:
-      0 6px 14px rgba(2, 13, 24, 0.24),
-      inset 0 1px 0 rgba(206, 248, 255, 0.1);
-  }
-
-  .dashboard-button-ghost:hover {
-    background-image: linear-gradient(160deg, rgba(43, 122, 157, 0.26) 0%, rgba(26, 86, 116, 0.26) 100%);
-    box-shadow:
-      0 8px 18px rgba(2, 13, 24, 0.3),
-      inset 0 1px 0 rgba(220, 252, 255, 0.14);
   }
 }
