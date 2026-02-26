@@ -1,0 +1,27 @@
+.progressTrack {
+  height: 4px;
+  background-color: var(--color-border);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--color-gold);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* One class per possible week (1–12 of 12) */
+.w8   { width: 8%; }
+.w17  { width: 17%; }
+.w25  { width: 25%; }
+.w33  { width: 33%; }
+.w42  { width: 42%; }
+.w50  { width: 50%; }
+.w58  { width: 58%; }
+.w67  { width: 67%; }
+.w75  { width: 75%; }
+.w83  { width: 83%; }
+.w92  { width: 92%; }
+.w100 { width: 100%; }

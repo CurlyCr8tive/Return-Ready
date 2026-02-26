@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { DigestListItem } from '@/lib/api'
+import { WeekBadge } from '@/components/ui/WeekBadge'
 
 interface DigestCardProps {
   digest: DigestListItem
@@ -12,9 +13,10 @@ export function DigestCard({ digest, hero = false }: DigestCardProps) {
   if (hero) {
     return (
       <div className="bg-navylight border border-border rounded-xl p-6 md:p-8">
-        <p className="text-xs font-mono text-textmuted mb-3">
-          Week {digest.week_number} of 12 · {dateRange}
-        </p>
+        <div className="mb-3">
+          <WeekBadge weekNumber={digest.week_number} showOverall />
+          <span className="text-xs font-mono text-textmuted"> · {dateRange}</span>
+        </div>
         <p className="text-textprimary text-base md:text-lg leading-relaxed mb-6">
           {digest.week_summary || 'Digest generating…'}
         </p>
@@ -43,9 +45,10 @@ export function DigestCard({ digest, hero = false }: DigestCardProps) {
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-mono text-textmuted mb-1">
-            Week {digest.week_number} · {digest.week_start}
-          </p>
+          <div className="mb-1">
+            <WeekBadge weekNumber={digest.week_number} />
+            <span className="text-xs font-mono text-textmuted"> · {digest.week_start}</span>
+          </div>
           <p className="text-sm text-textprimary line-clamp-2">
             {digest.week_summary || 'No summary'}
           </p>

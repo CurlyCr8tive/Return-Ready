@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { digestAPI } from '@/lib/api'
 import { MOCK_DIGEST } from '@/lib/mock-data'
 import { SourceBadge } from '@/components/ui/Badge'
+import { WeekBadge } from '@/components/ui/WeekBadge'
 import {
   DevelopmentsSection,
   SlackSection,
@@ -48,9 +49,7 @@ export default async function DigestPage({ params }: { params: { id: string } })
 
       {/* Header */}
       <div className="mb-8">
-        <p className="text-xs font-mono text-textmuted mb-2">
-          Week {digest.week_number} of 12
-        </p>
+        <WeekBadge weekNumber={digest.week_number} showOverall className="mb-2" />
         <h1 className="font-display text-3xl font-bold text-textprimary mb-2">
           {digest.week_start} – {digest.week_end}
         </h1>

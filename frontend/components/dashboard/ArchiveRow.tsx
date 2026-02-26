@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Lock } from 'lucide-react'
 import type { DigestListItem } from '@/lib/api'
+import { WeekBadge } from '@/components/ui/WeekBadge'
 
 interface ArchiveRowProps {
   digest: DigestListItem
@@ -12,7 +13,7 @@ export function ArchiveRow({ digest, future = false }: ArchiveRowProps) {
     return (
       <div className="flex items-center justify-between px-5 py-4 bg-navylight/50 border border-border rounded-lg opacity-40">
         <div>
-          <p className="text-xs font-mono text-textmuted mb-0.5">Week {digest.week_number}</p>
+          <WeekBadge weekNumber={digest.week_number} className="mb-0.5" />
           <p className="text-sm text-textmuted">{digest.week_start}</p>
         </div>
         <Lock size={14} className="text-textmuted" />
@@ -27,7 +28,7 @@ export function ArchiveRow({ digest, future = false }: ArchiveRowProps) {
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-3 mb-1">
-          <p className="text-xs font-mono text-textmuted">Week {digest.week_number}</p>
+          <WeekBadge weekNumber={digest.week_number} />
           <span className="text-xs text-textmuted">·</span>
           <p className="text-xs font-mono text-textmuted">{digest.week_start}</p>
           {!digest.is_read && (
