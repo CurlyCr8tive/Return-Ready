@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react'
 import { digestAPI, type DigestListItem } from '@/lib/api'
 import { ArchiveRow } from '@/components/dashboard/ArchiveRow'
 
-const TOTAL_WEEKS = 12
-
 export default function ArchivePage() {
   const [digests, setDigests] = useState<DigestListItem[]>([])
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all')
@@ -23,11 +21,6 @@ export default function ArchivePage() {
     if (filter === 'read') return d.is_read
     return true
   })
-
-  // Future placeholder weeks
-  const existingWeeks = new Set(digests.map(d => d.week_number))
-  const futureWeeks = Array.from({ length: TOTAL_WEEKS }, (_, i) => i + 1)
-    .filter(w => !existingWeeks.has(w))
 
   return (
     <div>
@@ -60,23 +53,7 @@ export default function ArchivePage() {
           {filtered.map(d => (
             <ArchiveRow key={d.id} digest={d} />
           ))}
-          {filter === 'all' && futureWeeks.map(w => (
-            <ArchiveRow
-              key={`future-${w}`}
-              digest={{
-                id: '',
-                week_number: w,
-                week_start: '—',
-                week_end: '—',
-                week_summary: '',
-                external_source_count: 0,
-                is_read: false,
-                generated_at: '',
-              }}
-              future
-            />
-          ))}
-          {filtered.length === 0 && filter !== 'all' && (
+          {filtered.length === 0 && (
             <p className="text-sm text-textmuted py-4">No {filter} digests.</p>
           )}
         </div>

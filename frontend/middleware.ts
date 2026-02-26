@@ -3,23 +3,38 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
-  const { data: { session } } = await supabase.auth.getSession()
-
   const { pathname } = req.nextUrl
+  const isAuthRoute =
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/reset-password') ||
+    pathname.startsWith('/api/auth')
 
-  // Allow login and auth callback through
-  if (pathname.startsWith('/login') || pathname.startsWith('/api/auth')) {
-    return res
+  // Allow auth entry/reset routes through
+  if (isAuthRoute) {
+    return NextResponse.next()
   }
 
-  // Protect all dashboard routes
-  if (!session) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return NextResponse.redirect(new URL('/login', req.url))
   }
 
-  return res
+  try {
+    const res = NextResponse.next()
+    const supabase = createMiddlewareClient({ req, res })
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    // Protect all dashboard routes
+    if (!session) {
+      return NextResponse.redirect(new URL('/login', req.url))
+    }
+
+    return res
+  } catch {
+    // Fail closed to login instead of surfacing a blank/500 page.
+    return NextResponse.redirect(new URL('/login', req.url))
+  }
 }
 
 export const config = {

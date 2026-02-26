@@ -1,13 +1,14 @@
-import { getWeekLabel } from '@/lib/weekLabel'
+import { getWeekLabelForDigest } from '@/lib/weekLabel'
 
 interface WeekBadgeProps {
   weekNumber: number
+  weekStart?: string
   showOverall?: boolean // include "of 12" in the main label (for hero/detail views)
   className?: string
 }
 
-export function WeekBadge({ weekNumber, showOverall = false, className = '' }: WeekBadgeProps) {
-  const { monthWeek, monthName, overallWeek } = getWeekLabel(weekNumber)
+export function WeekBadge({ weekNumber, weekStart, showOverall = false, className = '' }: WeekBadgeProps) {
+  const { monthWeek, monthName, overallWeek } = getWeekLabelForDigest(weekNumber, weekStart)
 
   return (
     <span className={`relative group/week inline-flex items-center cursor-default ${className}`}>

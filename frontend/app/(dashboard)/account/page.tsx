@@ -5,6 +5,16 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { supabase } from '@/lib/supabase'
 
+function nameFromEmail(email: string) {
+  const local = email.split('@')[0] || ''
+  if (!local) return 'Account User'
+  return local
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
 export default function AccountPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -40,7 +50,7 @@ export default function AccountPage() {
       const fullName =
         (typeof user.user_metadata?.full_name === 'string' && user.user_metadata.full_name) ||
         (typeof user.user_metadata?.name === 'string' && user.user_metadata.name) ||
-        'Joanna Patterson'
+        nameFromEmail(user.email || '')
 
       const nextEmail = user.email || ''
       setName(fullName)
@@ -148,7 +158,7 @@ export default function AccountPage() {
     setSendingReset(true)
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: `${window.location.origin}/login`,
+        redirectTo: `${window.location.origin}/reset-password`,
       })
       if (error) {
         setResetStatus(error.message)

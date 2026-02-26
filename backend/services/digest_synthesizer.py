@@ -34,13 +34,8 @@ She reads fast. She thinks strategically.
 Surface only what genuinely matters.
 
 NOTE ON SLACK:
-Slack integration is coming in a future update.
-For the slack_highlights section return this
-placeholder object:
-{{
-  "placeholder": true,
-  "message": "Slack integration coming soon — your team's #ai channel will appear here."
-}}
+Slack integration is not yet connected.
+For now, return an empty array [] for slack_highlights.
 
 EXTERNAL AI NEWS THIS WEEK:
 {external_news}
@@ -61,10 +56,7 @@ Return JSON only. No markdown. No preamble.
     }}
   ],
 
-  "slack_highlights": {{
-    "placeholder": true,
-    "message": "Slack integration coming soon — your team's #ai channel will appear here."
-  }},
+  "slack_highlights": [],
 
   "pursuit_implications": [
     {{
@@ -110,6 +102,7 @@ QUALITY RULES — follow these exactly:
 → Priority HIGH means act on return, MEDIUM means be aware, WATCH means monitor over time
 → Minimum 3 developments, maximum 5
 → Minimum 2 Pursuit implications, maximum 5
+→ slack_highlights must be [] until Slack integration is live
 → Featured resource must be genuinely worth Joanna's time — not filler
 """
 
@@ -255,13 +248,23 @@ async def generate_digest(week_start: date) -> dict:
     week_number = max(1, ((week_start - leave_start).days // 7) + 1)
 
     # Step 7: Store digest in Supabase
+    raw_slack_highlights = digest_data.get("slack_highlights")
+    if isinstance(raw_slack_highlights, list):
+        slack_highlights = [
+            item.strip()
+            for item in raw_slack_highlights
+            if isinstance(item, str) and item.strip()
+        ]
+    else:
+        slack_highlights = []
+
     digest_record = {
         "week_number":          week_number,
         "week_start":           str(week_start),
         "week_end":             str(week_start + timedelta(days=6)),
         "week_summary":         digest_data.get("week_summary"),
         "ai_developments":      digest_data.get("ai_developments"),
-        "slack_highlights":     digest_data.get("slack_highlights"),
+        "slack_highlights":     slack_highlights,
         "pursuit_implications": digest_data.get("pursuit_implications"),
         "companies_to_watch":   digest_data.get("companies_to_watch"),
         "jobs_and_hiring":      digest_data.get("jobs_and_hiring"),

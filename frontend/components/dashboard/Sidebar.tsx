@@ -152,9 +152,9 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
           const { monthWeek, monthName, overallWeek } = getWeekLabel(current)
           return (
             <>
-              <p className="text-[11px] text-textmuted mb-0.5">Hey Joanna, It&apos;s:</p>
+              <p className="mb-0.5 text-xs text-textmuted sm:text-sm">Hey Joanna, It&apos;s:</p>
               <span className="relative group/week inline-flex items-center cursor-default mb-3">
-                <span className="text-xs text-textprimary font-mono font-semibold">
+                <span className="text-sm font-mono font-semibold text-textprimary sm:text-base">
                   Week {monthWeek} · {monthName}
                 </span>
                 <span className="absolute bottom-full left-0 mb-1.5 px-2 py-1 bg-navy border border-border rounded-md text-xs font-mono text-textmuted whitespace-nowrap opacity-0 group-hover/week:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">

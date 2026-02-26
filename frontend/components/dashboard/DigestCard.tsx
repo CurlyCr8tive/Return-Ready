@@ -14,7 +14,7 @@ export function DigestCard({ digest, hero = false }: DigestCardProps) {
     return (
       <div className="rounded-xl border border-border bg-navylight p-4 sm:p-6 md:p-8">
         <div className="mb-3 flex flex-wrap items-center gap-x-1.5 gap-y-1">
-          <WeekBadge weekNumber={digest.week_number} showOverall />
+          <WeekBadge weekNumber={digest.week_number} weekStart={digest.week_start} showOverall />
           <span className="text-xs font-mono text-textmuted"> · {dateRange}</span>
         </div>
         <p className="mb-5 text-sm leading-relaxed text-textprimary sm:mb-6 sm:text-base md:text-lg">
@@ -46,10 +46,10 @@ export function DigestCard({ digest, hero = false }: DigestCardProps) {
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="mb-1 flex flex-wrap items-center gap-x-1.5 gap-y-1">
-            <WeekBadge weekNumber={digest.week_number} />
+            <WeekBadge weekNumber={digest.week_number} weekStart={digest.week_start} />
             <span className="text-xs font-mono text-textmuted"> · {digest.week_start}</span>
           </div>
-          <p className="text-sm text-textprimary line-clamp-2">
+          <p className="text-base text-textprimary line-clamp-2">
             {digest.week_summary || 'No summary'}
           </p>
         </div>

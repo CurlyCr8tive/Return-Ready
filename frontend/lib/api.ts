@@ -1,10 +1,17 @@
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+const API_TIMEOUT_MS = 8000
 
 async function fetchAPI<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS)
+
   const response = await fetch(`${BACKEND_URL}${path}`, {
     headers: { 'Content-Type': 'application/json', ...options.headers },
     ...options,
     cache: 'no-store',
+    signal: controller.signal,
+  }).finally(() => {
+    clearTimeout(timeoutId)
   })
 
   if (!response.ok) {
@@ -28,10 +35,14 @@ export type Digest = {
     source: string
     url: string | null
   }>
-  slack_highlights: {
-    placeholder: boolean
-    message: string
-  }
+  slack_highlights:
+    | string[]
+    | {
+        message?: string | null
+        items?: string[]
+        placeholder?: boolean
+      }
+    | null
   pursuit_implications: Array<{
     implication: string
     reasoning: string

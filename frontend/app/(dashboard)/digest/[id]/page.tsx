@@ -43,7 +43,7 @@ export default async function DigestPage({ params }: { params: { id: string } })
 
       {/* Header */}
       <div className="mb-6 sm:mb-8">
-        <WeekBadge weekNumber={digest.week_number} showOverall className="mb-2" />
+        <WeekBadge weekNumber={digest.week_number} weekStart={digest.week_start} showOverall className="mb-2" />
         <h1 className="mb-2 font-display text-2xl font-bold leading-tight text-textprimary sm:mb-3 sm:text-3xl">
           {digest.week_start} – {digest.week_end}
         </h1>
@@ -51,23 +51,23 @@ export default async function DigestPage({ params }: { params: { id: string } })
       </div>
 
       {/* Summary */}
-      <p className="mb-8 border-b border-border pb-7 text-sm leading-relaxed text-textprimary/90 sm:mb-10 sm:pb-8 sm:text-base">
+      <p className="mb-8 border-b border-border pb-7 text-base leading-relaxed text-textprimary/92 sm:mb-10 sm:pb-8 sm:text-lg">
         {digest.week_summary}
       </p>
 
-      {/* Sections — ordered by relevance to Joanna as COO */}
+      {/* Sections */}
       <div className="space-y-8 sm:space-y-10">
-        {/* 1. Actionable implications for Pursuit — most important for a COO */}
-        {digest.pursuit_implications?.length > 0 && (
-          <ImplicationsSection items={digest.pursuit_implications} />
-        )}
-
-        {/* 2. What happened in AI this week */}
+        {/* 1. What happened in AI this week */}
         {digest.ai_developments?.length > 0 && (
           <DevelopmentsSection items={digest.ai_developments} />
         )}
 
-        {/* 3. Jobs & workforce shifts — core to Pursuit's mission */}
+        {/* 2. Why this matters for Pursuit */}
+        {digest.pursuit_implications?.length > 0 && (
+          <ImplicationsSection items={digest.pursuit_implications} />
+        )}
+
+        {/* 3. Jobs & workforce shifts */}
         {digest.jobs_and_hiring && (
           <JobsSection data={digest.jobs_and_hiring} />
         )}
