@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 client = anthropic.Anthropic(
     api_key=os.environ.get("ANTHROPIC_API_KEY")
@@ -91,22 +91,41 @@ NEWS_FETCH_PROMPT = """
 Search the web for the most important AI news
 and developments from the past 7 days.
 
+SOURCE COVERAGE REQUIREMENTS:
+Prioritize credible, direct-article sources that cover:
+- AI in Education
+- Health Tech
+- Civic Tech
+- Fintech
+- Climate Tech
+- Cybersecurity
+- Media / Creative Industries
+- Nonprofit funding for tech skills training and education
+
+Coverage guidance:
+- Aim to include meaningful developments across at least 4 of the sectors above when available.
+- Include at least 1 item related to nonprofit funding, grants, or philanthropic investment in tech skills training/education if credible coverage exists this week.
+- Do not fabricate coverage for missing sectors. If a sector has no meaningful update this week, skip it.
+
 Find and return:
 
 1. TOP AI DEVELOPMENTS (3-5 items)
    Product launches, research breakthroughs,
    policy changes, major company moves.
    Real-world impact only — no hype.
+   Prefer items connected to the sectors listed above.
 
 2. COMPANIES TO WATCH (3-4 items)
    Gaining traction in AI this week.
-   Relevant to: education, workforce
-   development, hiring tools.
+   Relevant to the sectors above plus:
+   workforce development and hiring tools.
 
 3. AI AND JOBS (2-3 items)
    Who is hiring in AI this week?
    What skills are most in demand?
    Any notable hiring trends?
+   Prioritize signals relevant to education, nonprofits,
+   and workforce-facing roles.
 
 4. ONE FEATURED RESOURCE
    Single best article or report
