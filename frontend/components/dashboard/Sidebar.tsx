@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
-import { Home, Archive, Settings, LogOut } from 'lucide-react'
+import { Home, Archive, Settings, LogOut, UserRound } from 'lucide-react'
 import { clsx } from 'clsx'
 import { getWeekLabel } from '@/lib/weekLabel'
 import { supabase } from '@/lib/supabase'
@@ -103,12 +103,12 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
         {profileOpen && (
           <div className="absolute top-full left-0 right-0 mt-1 bg-navy border border-border rounded-xl shadow-xl z-50 overflow-hidden">
             <Link
-              href="/settings"
+              href="/account"
               onClick={() => setProfileOpen(false)}
               className="flex items-center gap-2.5 px-3 py-2.5 text-xs text-textmuted hover:text-textprimary hover:bg-white/5 transition"
             >
-              <Settings size={13} aria-hidden="true" />
-              Settings
+              <UserRound size={13} aria-hidden="true" />
+              Account
             </Link>
             <div className="border-t border-border" role="separator" />
             <button
