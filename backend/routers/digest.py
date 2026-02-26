@@ -79,12 +79,17 @@ async def get_stats() -> dict[str, Any]:
     days_until_monday = (7 - today.weekday()) % 7 or 7
     next_monday = today + timedelta(days=days_until_monday)
 
+    # If leave start date is in the future and sooner than next Monday, use it
+    leave_start_str = os.environ.get("LEAVE_START_DATE", "2026-03-01")
+    leave_start = date.fromisoformat(leave_start_str)
+    next_digest = str(leave_start if leave_start > today and leave_start <= next_monday else next_monday)
+
     return {
         "latest_week_number": latest_week,
         "total_digests_generated": total,
         "total_unread": unread,
         "last_generated": last_generated,
-        "next_digest": str(next_monday),
+        "next_digest": next_digest,
     }
 
 

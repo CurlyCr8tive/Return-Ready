@@ -30,9 +30,15 @@ export default async function HomePage() {
 
   return (
     <div>
-      <p className="text-xs font-mono text-textmuted mb-6">
-        Week of {latest.week_start} – {latest.week_end}
-      </p>
+      {/* Welcome header */}
+      <div className="mb-8">
+        <h1 className="font-display text-2xl font-bold text-textprimary">
+          Welcome Back, Joanna.
+        </h1>
+        <p className="text-sm text-textmuted mt-1">
+          Your AI intel for the week — curated &amp; ready.
+        </p>
+      </div>
 
       {/* Hero */}
       <div className="mb-8">
