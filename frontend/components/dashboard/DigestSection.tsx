@@ -9,14 +9,14 @@ const PRIORITY_COLORS: Record<string, string> = {
 export function DevelopmentsSection({ items }: { items: Digest['ai_developments'] }) {
   return (
     <section>
-      <h2 className="text-xs font-mono font-semibold text-gold tracking-widest uppercase mb-5 pb-3 border-b border-border">
+      <h2 className="mb-4 border-b border-border pb-3 text-xs font-mono font-semibold uppercase tracking-widest text-gold sm:mb-5">
         What Happened in AI This Week
       </h2>
-      <div className="space-y-6">
+      <div className="space-y-5 sm:space-y-6">
         {items.map((dev, i) => (
-          <div key={i} className="border-b border-border pb-6 last:border-0 last:pb-0">
+          <div key={i} className="border-b border-border pb-5 last:border-0 last:pb-0 sm:pb-6">
             <span className="text-xs font-mono text-textmuted" aria-hidden="true">{i + 1}</span>
-            <h3 className="font-display text-lg font-semibold text-textprimary mt-1 mb-2 leading-snug">
+            <h3 className="mt-1 mb-2 font-display text-base font-semibold leading-snug text-textprimary sm:text-lg">
               {dev.headline}
             </h3>
             <p className="text-sm text-textmuted leading-relaxed mb-2">{dev.synthesis}</p>
@@ -27,7 +27,7 @@ export function DevelopmentsSection({ items }: { items: Digest['ai_developments'
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${dev.source} (opens in new tab)`}
-                className="text-xs text-gold hover:underline"
+                className="inline-flex min-h-[40px] items-center rounded-md px-2 -ml-2 text-xs text-gold transition hover:bg-gold/10 hover:underline"
               >
                 {dev.source}
               </a>
@@ -57,8 +57,8 @@ export function SlackSection({ data }: { data: Digest['slack_highlights'] }) {
 
 export function ImplicationsSection({ items }: { items: Digest['pursuit_implications'] }) {
   return (
-    <section className="bg-gold/5 border border-gold/20 rounded-xl p-6">
-      <h2 className="text-xs font-mono font-semibold text-gold tracking-widest uppercase mb-5">
+    <section className="rounded-xl border border-gold/20 bg-gold/5 p-4 sm:p-5 md:p-6">
+      <h2 className="mb-4 text-xs font-mono font-semibold uppercase tracking-widest text-gold sm:mb-5">
         Why This Matters for Pursuit
       </h2>
       <div className="space-y-5">
@@ -79,10 +79,10 @@ export function ImplicationsSection({ items }: { items: Digest['pursuit_implicat
 export function CompaniesSection({ items }: { items: Digest['companies_to_watch'] }) {
   return (
     <section>
-      <h2 className="text-xs font-mono font-semibold text-gold tracking-widest uppercase mb-5 pb-3 border-b border-border">
+      <h2 className="mb-4 border-b border-border pb-3 text-xs font-mono font-semibold uppercase tracking-widest text-gold sm:mb-5">
         Companies to Watch
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
         {items.map((co, i) => {
           const inner = (
             <>
@@ -104,12 +104,12 @@ export function CompaniesSection({ items }: { items: Digest['companies_to_watch'
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${co.name} — ${co.what_they_do} (opens in new tab)`}
-              className="group bg-navylight border border-border rounded-lg p-4 hover:border-gold/40 transition block"
+              className="group block rounded-lg border border-border bg-navylight p-3.5 transition hover:border-gold/40 sm:p-4"
             >
               {inner}
             </a>
           ) : (
-            <div key={i} className="bg-navylight border border-border rounded-lg p-4">
+            <div key={i} className="rounded-lg border border-border bg-navylight p-3.5 sm:p-4">
               {inner}
             </div>
           )
@@ -122,7 +122,7 @@ export function CompaniesSection({ items }: { items: Digest['companies_to_watch'
 export function JobsSection({ data }: { data: Digest['jobs_and_hiring'] }) {
   return (
     <section>
-      <h2 className="text-xs font-mono font-semibold text-gold tracking-widest uppercase mb-4 pb-3 border-b border-border">
+      <h2 className="mb-4 border-b border-border pb-3 text-xs font-mono font-semibold uppercase tracking-widest text-gold">
         Jobs &amp; Skills in Demand
       </h2>
       <p className="text-sm text-textmuted leading-relaxed mb-4">{data.summary}</p>
@@ -136,7 +136,7 @@ export function JobsSection({ data }: { data: Digest['jobs_and_hiring'] }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${item.insight} (opens in new tab)`}
-                className="hover:text-gold hover:underline transition"
+                className="inline-flex min-h-[40px] items-center rounded-md px-1 -ml-1 transition hover:text-gold hover:underline"
               >
                 {item.insight}
               </a>
@@ -152,24 +152,24 @@ export function JobsSection({ data }: { data: Digest['jobs_and_hiring'] }) {
 
 export function FeaturedSection({ data }: { data: Digest['featured_resource'] }) {
   return (
-    <section className="bg-navy border border-border rounded-xl p-6">
+    <section className="rounded-xl border border-border bg-navy p-4 sm:p-5 md:p-6">
       <p className="text-xs font-mono text-gold font-semibold tracking-widest uppercase mb-4" aria-hidden="true">
         One Thing to Read
       </p>
-      <h2 className="font-display text-xl font-semibold text-textprimary mb-2 leading-snug">
+      <h2 className="mb-2 font-display text-lg font-semibold leading-snug text-textprimary sm:text-xl">
         {data.title}
       </h2>
       <p className="text-xs text-textmuted font-mono mb-1">
         {data.publication} <span aria-hidden="true">·</span> {data.format} <span aria-hidden="true">·</span> {data.read_time}
       </p>
-      <p className="text-sm text-textmuted mb-5">{data.why_joanna}</p>
+      <p className="mb-4 text-sm text-textmuted sm:mb-5">{data.why_joanna}</p>
       {data.url && (
         <a
           href={data.url}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Read ${data.title} (opens in new tab)`}
-          className="inline-block bg-gold text-navy text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-gold/90 transition"
+          className="inline-flex min-h-[44px] items-center rounded-lg bg-gold px-5 py-2.5 text-sm font-semibold text-navy transition hover:bg-gold/90"
         >
           Read Now <span aria-hidden="true">→</span>
         </a>

@@ -52,7 +52,7 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
 
   if (mobile) {
     return (
-      <div className="flex items-center justify-around px-2 py-3">
+      <div className="flex items-center justify-around gap-1 px-1 py-1">
         {navItems.map(({ href, label, icon: Icon }) => {
           const active = pathname === href
           return (
@@ -61,11 +61,13 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
               href={href}
               aria-current={active ? 'page' : undefined}
               className={clsx(
-                'flex flex-col items-center gap-1 px-3 py-1 text-xs transition',
-                active ? 'text-gold' : 'text-textmuted hover:text-textprimary'
+                'flex min-h-[48px] min-w-[78px] flex-col items-center justify-center gap-1 rounded-lg px-3 py-2 text-[11px] font-medium transition',
+                active
+                  ? 'bg-gold/10 text-gold'
+                  : 'text-textmuted hover:bg-white/5 hover:text-textprimary'
               )}
             >
-              <Icon size={18} aria-hidden="true" />
+              <Icon size={17} aria-hidden="true" />
               {label}
             </Link>
           )

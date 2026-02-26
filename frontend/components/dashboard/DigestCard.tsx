@@ -12,16 +12,16 @@ export function DigestCard({ digest, hero = false }: DigestCardProps) {
 
   if (hero) {
     return (
-      <div className="bg-navylight border border-border rounded-xl p-6 md:p-8">
-        <div className="mb-3">
+      <div className="rounded-xl border border-border bg-navylight p-4 sm:p-6 md:p-8">
+        <div className="mb-3 flex flex-wrap items-center gap-x-1.5 gap-y-1">
           <WeekBadge weekNumber={digest.week_number} showOverall />
           <span className="text-xs font-mono text-textmuted"> · {dateRange}</span>
         </div>
-        <p className="text-textprimary text-base md:text-lg leading-relaxed mb-6">
+        <p className="mb-5 text-sm leading-relaxed text-textprimary sm:mb-6 sm:text-base md:text-lg">
           {digest.week_summary || 'Digest generating…'}
         </p>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 text-xs text-textmuted font-mono">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs text-textmuted">
             <span>{digest.external_source_count} sources</span>
             {!digest.is_read && (
               <span className="px-2 py-0.5 bg-gold/10 text-gold rounded-full">New</span>
@@ -29,7 +29,7 @@ export function DigestCard({ digest, hero = false }: DigestCardProps) {
           </div>
           <Link
             href={`/digest/${digest.id}`}
-            className="text-sm font-medium text-gold hover:text-gold/80 transition"
+            className="inline-flex min-h-[44px] items-center rounded-md px-2 text-sm font-medium text-gold transition hover:bg-gold/10 hover:text-gold/80"
           >
             Read Full Digest <span aria-hidden="true">→</span>
           </Link>
@@ -41,11 +41,11 @@ export function DigestCard({ digest, hero = false }: DigestCardProps) {
   return (
     <Link
       href={`/digest/${digest.id}`}
-      className="block bg-navylight border border-border rounded-lg p-4 hover:border-gold/30 transition"
+      className="block rounded-lg border border-border bg-navylight p-3.5 transition hover:border-gold/30 sm:p-4"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <div className="mb-1">
+          <div className="mb-1 flex flex-wrap items-center gap-x-1.5 gap-y-1">
             <WeekBadge weekNumber={digest.week_number} />
             <span className="text-xs font-mono text-textmuted"> · {digest.week_start}</span>
           </div>
