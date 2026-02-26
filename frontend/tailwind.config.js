@@ -14,7 +14,7 @@ module.exports = {
         gold:        '#C9A84C',
         teal:        '#3DBFB8',
         textprimary: '#F0F4FF',
-        textmuted:   '#8A9DC0',
+        textmuted:   '#B8C9E4',
       },
       fontFamily: {
         display: ['Playfair Display', 'serif'],

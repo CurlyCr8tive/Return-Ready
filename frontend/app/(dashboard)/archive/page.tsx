@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { digestAPI, type DigestListItem } from '@/lib/api'
-import { MOCK_DIGEST_LIST } from '@/lib/mock-data'
 import { ArchiveRow } from '@/components/dashboard/ArchiveRow'
 
 const TOTAL_WEEKS = 12
@@ -14,8 +13,8 @@ export default function ArchivePage() {
 
   useEffect(() => {
     digestAPI.getAll()
-      .then(res => setDigests(res.digests.length > 0 ? res.digests : MOCK_DIGEST_LIST))
-      .catch(() => setDigests(MOCK_DIGEST_LIST))
+      .then(res => setDigests(res.digests))
+      .catch(() => setDigests([]))
       .finally(() => setLoading(false))
   }, [])
 
@@ -36,10 +35,12 @@ export default function ArchivePage() {
       <p className="text-sm text-textmuted mb-6">12 weeks of AI intelligence</p>
 
       {/* Filter pills */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6" role="group" aria-label="Filter digests">
         {(['all', 'unread', 'read'] as const).map(f => (
           <button
             key={f}
+            type="button"
+            aria-pressed={filter === f ? 'true' : 'false'}
             onClick={() => setFilter(f)}
             className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${
               filter === f

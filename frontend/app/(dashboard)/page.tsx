@@ -1,5 +1,4 @@
 import { digestAPI } from '@/lib/api'
-import { MOCK_DIGEST_LIST, MOCK_STATS } from '@/lib/mock-data'
 import { DigestCard } from '@/components/dashboard/DigestCard'
 import { StatCard } from '@/components/dashboard/StatCard'
 
@@ -12,19 +11,16 @@ export default async function HomePage() {
     digestAPI.getAll(),
   ])
 
-  // Fall back to mock data when backend is not yet connected
   const latest =
     latestRes.status === 'fulfilled' && latestRes.value.digest
       ? latestRes.value.digest
-      : MOCK_DIGEST_LIST[0]
+      : null
 
   const stats =
-    statsRes.status === 'fulfilled' ? statsRes.value : MOCK_STATS
+    statsRes.status === 'fulfilled' ? statsRes.value : null
 
   const allDigests =
-    allRes.status === 'fulfilled' && allRes.value.digests.length > 0
-      ? allRes.value.digests
-      : MOCK_DIGEST_LIST
+    allRes.status === 'fulfilled' ? allRes.value.digests : []
 
   const previous = allDigests.slice(1, 4)
 
@@ -42,27 +38,35 @@ export default async function HomePage() {
 
       {/* Hero */}
       <div className="mb-8">
-        <DigestCard digest={latest} hero />
+        {latest ? (
+          <DigestCard digest={latest} hero />
+        ) : (
+          <div className="bg-navylight border border-border rounded-xl p-8 text-center">
+            <p className="text-sm text-textmuted">Your first digest will appear here on March 1st.</p>
+          </div>
+        )}
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <StatCard
-          label="Current Week"
-          value={`Week ${stats.latest_week_number}`}
-          sub="of 12"
-        />
-        <StatCard
-          label="Digests Generated"
-          value={stats.total_digests_generated}
-          sub={stats.total_unread > 0 ? `${stats.total_unread} unread` : 'All read'}
-        />
-        <StatCard
-          label="Next Digest"
-          value={stats.next_digest}
-          sub="Monday at 6am"
-        />
-      </div>
+      {stats && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <StatCard
+            label="Current Week"
+            value={`Week ${stats.latest_week_number || 1}`}
+            sub="of 12"
+          />
+          <StatCard
+            label="Digests Generated"
+            value={stats.total_digests_generated}
+            sub={stats.total_unread > 0 ? `${stats.total_unread} unread` : 'All read'}
+          />
+          <StatCard
+            label="Next Digest"
+            value={stats.next_digest}
+            sub="Monday at 6am"
+          />
+        </div>
+      )}
 
       {/* Previous digests */}
       {previous.length > 0 && (

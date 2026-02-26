@@ -1,4 +1,5 @@
 import { Sidebar } from '@/components/dashboard/Sidebar'
+import { ScrollOrbs } from '@/components/dashboard/ScrollOrbs'
 import s from './dashboard.module.css'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -12,10 +13,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         Skip to main content
       </a>
 
-      {/* Atmosphere orbs */}
-      <div className={s.glowTeal} />
-      <div className={s.glowPurple} />
-      <div className={s.glowBlue} />
+      {/* Atmosphere orbs — color shifts on scroll */}
+      <ScrollOrbs />
 
       {/* Network graph background — decorative only */}
       <svg aria-hidden="true" className={s.networkSvg} xmlns="http://www.w3.org/2000/svg">

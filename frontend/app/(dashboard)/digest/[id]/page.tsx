@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { digestAPI } from '@/lib/api'
-import { MOCK_DIGEST } from '@/lib/mock-data'
 import { WeekBadge } from '@/components/ui/WeekBadge'
 import { SourcesPanel } from '@/components/dashboard/SourcesPanel'
 import {
@@ -21,12 +20,7 @@ export default async function DigestPage({ params }: { params: { id: string } })
     const res = await digestAPI.getById(params.id)
     digest = res.digest
   } catch {
-    // Fall back to mock data for mock IDs; 404 everything else
-    if (params.id === MOCK_DIGEST.id) {
-      digest = MOCK_DIGEST
-    } else {
-      notFound()
-    }
+    notFound()
   }
 
   const generatedAt = new Date(digest.generated_at).toLocaleString('en-US', {
