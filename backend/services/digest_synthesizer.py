@@ -1,5 +1,7 @@
+print("Digest synthesizer pipeline started")
+from pathlib import Path
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 import anthropic
 import json
 import os
@@ -10,10 +12,12 @@ client = anthropic.Anthropic(
     api_key=os.environ.get("ANTHROPIC_API_KEY")
 )
 
-supabase = create_client(
-    os.environ.get("SUPABASE_URL"),
-    os.environ.get("SUPABASE_SERVICE_KEY")
-)
+def get_supabase():
+    supabase_url = os.environ.get("SUPABASE_URL")
+    supabase_key = os.environ.get("SUPABASE_SERVICE_KEY")
+    if not supabase_url or not supabase_key:
+        raise RuntimeError("Missing SUPABASE_URL or SUPABASE_SERVICE_KEY in backend/.env")
+    return create_client(supabase_url, supabase_key)
 
 DIGEST_PROMPT = """
 You are generating a weekly AI digest for
@@ -114,6 +118,8 @@ async def generate_digest(week_start: date) -> dict:
     Returns digest_id and stats.
     """
 
+    supabase = get_supabase()
+
     # Step 1: Fetch external news
     from services.news_fetcher import fetch_ai_news
     news_result = await fetch_ai_news()
@@ -138,33 +144,95 @@ async def generate_digest(week_start: date) -> dict:
     if not pursuit_context:
         pursuit_context = os.environ.get("PURSUIT_CONTEXT", "")
 
-    # Step 3: Build synthesis prompt
+    # Step 3: Compress news data to stay within token limits
+    def compress_news(data: dict) -> dict:
+        def trim(text, limit=180):
+            if not text:
+                return text
+            return text[:limit] + "..." if len(text) > limit else text
+
+        return {
+            "developments": [
+                {
+                    "headline": d.get("headline", ""),
+                    "what_happened": trim(d.get("what_happened", ""), 200),
+                    "why_it_matters": trim(d.get("why_it_matters", ""), 150),
+                    "source": d.get("source", ""),
+                    "url": d.get("url"),
+                }
+                for d in data.get("developments", [])[:5]
+            ],
+            "companies_to_watch": [
+                {
+                    "name": c.get("name", ""),
+                    "why_watch_now": trim(c.get("why_watch_now", ""), 150),
+                    "relevance": trim(c.get("relevance", ""), 150),
+                }
+                for c in data.get("companies_to_watch", [])[:4]
+            ],
+            "jobs_and_hiring": [
+                {
+                    "insight": trim(j.get("insight", ""), 200),
+                    "source": j.get("source", ""),
+                }
+                for j in data.get("jobs_and_hiring", [])[:3]
+            ],
+            "featured_resource": {
+                "title": data.get("featured_resource", {}).get("title", ""),
+                "publication": data.get("featured_resource", {}).get("publication", ""),
+                "url": data.get("featured_resource", {}).get("url"),
+                "why_read": trim(data.get("featured_resource", {}).get("why_read", ""), 150),
+                "format": data.get("featured_resource", {}).get("format", ""),
+                "estimated_time": data.get("featured_resource", {}).get("estimated_time", ""),
+            },
+        }
+
+    compressed = compress_news(news_result["data"])
     filled_prompt = DIGEST_PROMPT.format(
         pursuit_context=pursuit_context,
-        external_news=json.dumps(news_result["data"], indent=2)
+        external_news=json.dumps(compressed, indent=2)
     )
 
-    # Step 4: Run synthesis
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=4000,
-        messages=[
+    # Step 4: Run synthesis — retry spaced past the 60s rate limit window
+    import time
+    max_retries = 3
+    retry_delay = 65  # seconds — beyond the 1-min token window
+    for attempt in range(max_retries):
+      try:
+        response = client.messages.create(
+          model="claude-sonnet-4-6",
+          max_tokens=4096,
+          messages=[
             {
-                "role": "user",
-                "content": filled_prompt
+              "role": "user",
+              "content": filled_prompt
             }
-        ]
-    )
-
-    result_text = response.content[0].text
+          ]
+        )
+        result_text = response.content[0].text
+        break
+      except anthropic.RateLimitError as e:
+        print(f"Anthropic rate limit hit (attempt {attempt+1}/{max_retries}): {e}. Waiting {retry_delay}s...")
+        time.sleep(retry_delay)
+      except Exception as e:
+        print(f"Anthropic API error: {e}")
+        return {
+          "success": False,
+          "error": f"Anthropic API error: {e}"
+        }
+    else:
+      return {
+        "success": False,
+        "error": "Anthropic rate limit exceeded after retries"
+      }
 
     # Step 5: Parse response
     try:
         clean = result_text.strip()
-        if clean.startswith("```"):
-            clean = clean.split("```")[1]
-            if clean.startswith("json"):
-                clean = clean[4:]
+        if "```json" in clean:
+            clean = clean.split("```json")[1].split("```")[0]
+        elif "```" in clean:
+            clean = clean.split("```")[1].split("```")[0]
         digest_data = json.loads(clean.strip())
 
     except json.JSONDecodeError as e:
@@ -209,3 +277,11 @@ async def generate_digest(week_start: date) -> dict:
         "week_start":   str(week_start),
         "source_count": news_result["source_count"]
     }
+if __name__ == "__main__":
+    from datetime import date
+    import asyncio
+
+    print("Digest synthesizer pipeline main entry")
+    week_start = date.today()
+    result = asyncio.run(generate_digest(week_start))
+    print("Pipeline result:", result)
