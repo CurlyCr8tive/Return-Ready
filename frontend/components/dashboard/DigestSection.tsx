@@ -98,7 +98,7 @@ export function JobsSection({ data }: { data: Digest['jobs_and_hiring'] }) {
   return (
     <section>
       <h2 className="text-xs font-mono font-semibold text-gold tracking-widest uppercase mb-4 pb-3 border-b border-border">
-        Jobs and Hiring
+        Jobs &amp; Skills in Demand
       </h2>
       <p className="text-sm text-textmuted leading-relaxed mb-4">{data.summary}</p>
       <ul className="space-y-2">

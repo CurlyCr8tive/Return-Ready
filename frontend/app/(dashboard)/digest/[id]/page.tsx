@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { digestAPI } from '@/lib/api'
 import { MOCK_DIGEST } from '@/lib/mock-data'
-import { SourceBadge } from '@/components/ui/Badge'
 import { WeekBadge } from '@/components/ui/WeekBadge'
+import { SourcesPanel } from '@/components/dashboard/SourcesPanel'
 import {
   DevelopmentsSection,
   SlackSection,
@@ -50,12 +50,10 @@ export default async function DigestPage({ params }: { params: { id: string } })
       {/* Header */}
       <div className="mb-8">
         <WeekBadge weekNumber={digest.week_number} showOverall className="mb-2" />
-        <h1 className="font-display text-3xl font-bold text-textprimary mb-2">
+        <h1 className="font-display text-3xl font-bold text-textprimary mb-3">
           {digest.week_start} – {digest.week_end}
         </h1>
-        <div className="flex items-center gap-2 flex-wrap">
-          <SourceBadge label={`${digest.external_source_count} external sources`} />
-        </div>
+        <SourcesPanel digest={digest} />
       </div>
 
       {/* Summary */}
@@ -63,28 +61,34 @@ export default async function DigestPage({ params }: { params: { id: string } })
         {digest.week_summary}
       </p>
 
-      {/* Sections */}
+      {/* Sections — ordered by relevance to Joanna as COO */}
       <div className="space-y-10">
-        {digest.ai_developments?.length > 0 && (
-          <DevelopmentsSection items={digest.ai_developments} />
-        )}
-
-        {digest.slack_highlights && (
-          <SlackSection data={digest.slack_highlights} />
-        )}
-
+        {/* 1. Actionable implications for Pursuit — most important for a COO */}
         {digest.pursuit_implications?.length > 0 && (
           <ImplicationsSection items={digest.pursuit_implications} />
         )}
 
-        {digest.companies_to_watch?.length > 0 && (
-          <CompaniesSection items={digest.companies_to_watch} />
+        {/* 2. What happened in AI this week */}
+        {digest.ai_developments?.length > 0 && (
+          <DevelopmentsSection items={digest.ai_developments} />
         )}
 
+        {/* 3. Jobs & workforce shifts — core to Pursuit's mission */}
         {digest.jobs_and_hiring && (
           <JobsSection data={digest.jobs_and_hiring} />
         )}
 
+        {/* 4. Companies gaining traction in the space */}
+        {digest.companies_to_watch?.length > 0 && (
+          <CompaniesSection items={digest.companies_to_watch} />
+        )}
+
+        {/* 5. Slack team discussions */}
+        {digest.slack_highlights && (
+          <SlackSection data={digest.slack_highlights} />
+        )}
+
+        {/* 6. One article worth Joanna's time */}
         {digest.featured_resource && (
           <FeaturedSection data={digest.featured_resource} />
         )}
