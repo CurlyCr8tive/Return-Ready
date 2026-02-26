@@ -216,7 +216,7 @@
   font-size: 0.875rem;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #e2e8f0;
@@ -224,10 +224,56 @@
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(29, 78, 216, 0.5);
+  border-color: rgba(99, 130, 220, 0.4);
+  color: #e0e7ff;
+}
+
+.submitBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 130, 220, 0.55);
 }
 
 .submitBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.passwordAssist {
+  margin-top: 0.25rem;
+}
+
+.forgotBtn {
+  border: none;
+  background: transparent;
+  color: #bfdbfe;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.15rem 0;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.forgotBtn:hover:not(:disabled) {
+  color: #e0e7ff;
+  text-decoration: underline;
+}
+
+.forgotBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resetNote {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.resetSuccess {
+  color: #7dd3fc;
+}
+
+.resetError {
+  color: #fca5a5;
 }

@@ -15,6 +15,8 @@ export default function LoginPage() {
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [resetLoading, setResetLoading] = useState(false)
+  const [resetNotice, setResetNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,6 +39,7 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setResetNotice(null)
 
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
@@ -46,6 +49,34 @@ export default function LoginPage() {
     } else {
       router.push('/')
     }
+  }
+
+  const handleForgotPassword = async () => {
+    setError('')
+    setResetNotice(null)
+
+    if (!email.trim()) {
+      setResetNotice({
+        type: 'error',
+        text: 'Enter your email address above first.',
+      })
+      return
+    }
+
+    setResetLoading(true)
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/login`,
+    })
+
+    if (error) {
+      setResetNotice({ type: 'error', text: error.message })
+    } else {
+      setResetNotice({
+        type: 'success',
+        text: 'Password reset link sent. Check your email.',
+      })
+    }
+    setResetLoading(false)
   }
 
   return (
@@ -110,14 +141,14 @@ export default function LoginPage() {
           <div className={s.tabs}>
             <button
               type="button"
-              onClick={() => { setMode('magic'); setError(''); setSent(false) }}
+              onClick={() => { setMode('magic'); setError(''); setSent(false); setResetNotice(null) }}
               className={`${s.tab} ${mode === 'magic' ? s.tabActive : ''}`}
             >
               Magic Link
             </button>
             <button
               type="button"
-              onClick={() => { setMode('password'); setError(''); setSent(false) }}
+              onClick={() => { setMode('password'); setError(''); setSent(false); setResetNotice(null) }}
               className={`${s.tab} ${mode === 'password' ? s.tabActive : ''}`}
             >
               Password
@@ -195,6 +226,26 @@ export default function LoginPage() {
               >
                 {loading ? 'Signing in…' : 'Sign In'}
               </button>
+
+              <div className={s.passwordAssist}>
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  disabled={loading || resetLoading}
+                  className={s.forgotBtn}
+                >
+                  {resetLoading ? 'Sending reset link…' : 'Forgot password?'}
+                </button>
+                {resetNotice ? (
+                  <p
+                    className={`${s.resetNote} ${
+                      resetNotice.type === 'success' ? s.resetSuccess : s.resetError
+                    }`}
+                  >
+                    {resetNotice.text}
+                  </p>
+                ) : null}
+              </div>
             </form>
           )}
         </div>
