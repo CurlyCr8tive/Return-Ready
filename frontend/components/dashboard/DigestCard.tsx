@@ -31,7 +31,7 @@ export function DigestCard({ digest, hero = false }: DigestCardProps) {
             href={`/digest/${digest.id}`}
             className="text-sm font-medium text-gold hover:text-gold/80 transition"
           >
-            Read Full Digest →
+            Read Full Digest <span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>
@@ -54,7 +54,11 @@ export function DigestCard({ digest, hero = false }: DigestCardProps) {
           </p>
         </div>
         {!digest.is_read && (
-          <span className="flex-shrink-0 w-2 h-2 rounded-full bg-gold mt-1.5" />
+          <span
+            className="flex-shrink-0 w-2 h-2 rounded-full bg-gold mt-1.5"
+            aria-label="Unread"
+            role="status"
+          />
         )}
       </div>
     </Link>

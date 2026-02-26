@@ -4,13 +4,21 @@ import s from './dashboard.module.css'
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className={s.page}>
+      {/* Skip to main content — visible on keyboard focus only */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-gold focus:text-navy focus:text-sm focus:font-semibold focus:rounded-lg"
+      >
+        Skip to main content
+      </a>
+
       {/* Atmosphere orbs */}
       <div className={s.glowTeal} />
       <div className={s.glowPurple} />
       <div className={s.glowBlue} />
 
-      {/* Network graph background */}
-      <svg className={s.networkSvg} xmlns="http://www.w3.org/2000/svg">
+      {/* Network graph background — decorative only */}
+      <svg aria-hidden="true" className={s.networkSvg} xmlns="http://www.w3.org/2000/svg">
         {/* Main lines */}
         <line x1="0%" y1="25%" x2="18%" y2="45%" stroke="#14b8a6" strokeWidth="1" />
         <line x1="18%" y1="45%" x2="38%" y2="20%" stroke="#14b8a6" strokeWidth="0.8" />
@@ -61,12 +69,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Dashboard shell */}
       <div className={s.shell}>
         {/* Sidebar — desktop */}
-        <aside className={s.sidebar}>
+        <aside className={s.sidebar} aria-label="Sidebar navigation">
           <Sidebar />
         </aside>
 
         {/* Main content */}
-        <main className={s.mainWrap}>
+        <main id="main-content" className={s.mainWrap}>
           <div className={s.panel}>
             {children}
           </div>
@@ -74,7 +82,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* Bottom nav — mobile */}
-      <nav className={s.mobileNav}>
+      <nav className={s.mobileNav} aria-label="Mobile navigation">
         <Sidebar mobile />
       </nav>
     </div>

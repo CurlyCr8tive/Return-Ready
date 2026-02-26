@@ -62,15 +62,18 @@ export function SourcesPanel({ digest }: { digest: Pick<Digest,
     <div>
       <button
         type="button"
+        aria-expanded={open}
+        aria-controls="sources-list"
+        aria-label={`${total} sources — ${open ? 'collapse' : 'expand'} source list`}
         onClick={() => setOpen(v => !v)}
         className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gold/10 text-gold border border-gold/20 hover:bg-gold/20 transition cursor-pointer"
       >
         {total} sources
-        <span className="text-[10px] leading-none">{open ? '▲' : '▼'}</span>
+        <span className="text-[10px] leading-none" aria-hidden="true">{open ? '▲' : '▼'}</span>
       </button>
 
       {open && (
-        <div className="mt-3 border border-border rounded-xl overflow-hidden">
+        <div id="sources-list" className="mt-3 border border-border rounded-xl overflow-hidden">
           {groups.map((group, gi) => (
             <div key={group.label} className={gi > 0 ? 'border-t border-border' : ''}>
               <p className="px-4 py-2 text-[10px] font-mono font-semibold tracking-widest uppercase text-textmuted bg-navylight/60">
@@ -87,6 +90,7 @@ export function SourcesPanel({ digest }: { digest: Pick<Digest,
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`${item.title}${item.pub ? ` — ${item.pub}` : ''} (opens in new tab)`}
                         className={`${base} hover:bg-gold/5`}
                       >
                         <div className="flex-1 min-w-0">
@@ -95,7 +99,7 @@ export function SourcesPanel({ digest }: { digest: Pick<Digest,
                             <p className="text-[10px] text-textmuted mt-0.5 font-mono">{item.pub}</p>
                           )}
                         </div>
-                        <span className="flex-shrink-0 text-xs text-gold font-mono mt-0.5">↗</span>
+                        <span className="flex-shrink-0 text-xs text-gold font-mono mt-0.5" aria-hidden="true">↗</span>
                       </a>
                     )
                   }

@@ -15,7 +15,7 @@ export function DevelopmentsSection({ items }: { items: Digest['ai_developments'
       <div className="space-y-6">
         {items.map((dev, i) => (
           <div key={i} className="border-b border-border pb-6 last:border-0 last:pb-0">
-            <span className="text-xs font-mono text-textmuted">{i + 1}</span>
+            <span className="text-xs font-mono text-textmuted" aria-hidden="true">{i + 1}</span>
             <h3 className="font-display text-lg font-semibold text-textprimary mt-1 mb-2 leading-snug">
               {dev.headline}
             </h3>
@@ -26,6 +26,7 @@ export function DevelopmentsSection({ items }: { items: Digest['ai_developments'
                 href={dev.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`${dev.source} (opens in new tab)`}
                 className="text-xs text-gold hover:underline"
               >
                 {dev.source}
@@ -88,7 +89,7 @@ export function CompaniesSection({ items }: { items: Digest['companies_to_watch'
               <div className="flex items-start justify-between gap-2 mb-1">
                 <p className="font-semibold text-textprimary leading-snug">{co.name}</p>
                 {co.url && (
-                  <span className="text-gold text-xs flex-shrink-0 opacity-60 group-hover:opacity-100 transition mt-0.5">↗</span>
+                  <span className="text-gold text-xs flex-shrink-0 opacity-60 group-hover:opacity-100 transition mt-0.5" aria-hidden="true">↗</span>
                 )}
               </div>
               <p className="text-xs text-textmuted mb-2">{co.what_they_do}</p>
@@ -102,6 +103,7 @@ export function CompaniesSection({ items }: { items: Digest['companies_to_watch'
               href={co.url}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`${co.name} — ${co.what_they_do} (opens in new tab)`}
               className="group bg-navylight border border-border rounded-lg p-4 hover:border-gold/40 transition block"
             >
               {inner}
@@ -127,12 +129,13 @@ export function JobsSection({ data }: { data: Digest['jobs_and_hiring'] }) {
       <div className="space-y-2">
         {data.key_insights.map((item, i) => (
           <div key={i} className="flex items-start gap-2 text-sm text-textprimary/80">
-            <span className="text-gold mt-0.5 flex-shrink-0">—</span>
+            <span className="text-gold mt-0.5 flex-shrink-0" aria-hidden="true">—</span>
             {item.url ? (
               <a
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`${item.insight} (opens in new tab)`}
                 className="hover:text-gold hover:underline transition"
               >
                 {item.insight}
@@ -150,14 +153,14 @@ export function JobsSection({ data }: { data: Digest['jobs_and_hiring'] }) {
 export function FeaturedSection({ data }: { data: Digest['featured_resource'] }) {
   return (
     <section className="bg-navy border border-border rounded-xl p-6">
-      <p className="text-xs font-mono text-gold font-semibold tracking-widest uppercase mb-4">
+      <p className="text-xs font-mono text-gold font-semibold tracking-widest uppercase mb-4" aria-hidden="true">
         One Thing to Read
       </p>
-      <h3 className="font-display text-xl font-semibold text-textprimary mb-2 leading-snug">
+      <h2 className="font-display text-xl font-semibold text-textprimary mb-2 leading-snug">
         {data.title}
-      </h3>
+      </h2>
       <p className="text-xs text-textmuted font-mono mb-1">
-        {data.publication} · {data.format} · {data.read_time}
+        {data.publication} <span aria-hidden="true">·</span> {data.format} <span aria-hidden="true">·</span> {data.read_time}
       </p>
       <p className="text-sm text-textmuted mb-5">{data.why_joanna}</p>
       {data.url && (
@@ -165,9 +168,10 @@ export function FeaturedSection({ data }: { data: Digest['featured_resource'] })
           href={data.url}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`Read ${data.title} (opens in new tab)`}
           className="inline-block bg-gold text-navy text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-gold/90 transition"
         >
-          Read Now →
+          Read Now <span aria-hidden="true">→</span>
         </a>
       )}
     </section>

@@ -59,12 +59,13 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
             <Link
               key={href}
               href={href}
+              aria-current={active ? 'page' : undefined}
               className={clsx(
                 'flex flex-col items-center gap-1 px-3 py-1 text-xs transition',
                 active ? 'text-gold' : 'text-textmuted hover:text-textprimary'
               )}
             >
-              <Icon size={18} />
+              <Icon size={18} aria-hidden="true" />
               {label}
             </Link>
           )
@@ -84,14 +85,17 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
       <div ref={profileRef} className="relative mb-6">
         <button
           type="button"
+          aria-label="Profile menu"
+          aria-expanded={profileOpen ? 'true' : 'false'}
+          aria-haspopup="true"
           onClick={() => setProfileOpen(v => !v)}
           className="flex items-center gap-2 px-1 py-1.5 rounded-lg hover:bg-white/5 transition w-full text-left"
         >
-          <div className="w-7 h-7 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center flex-shrink-0">
+          <div className="w-7 h-7 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center flex-shrink-0" aria-hidden="true">
             <span className="text-[10px] font-bold text-gold">JP</span>
           </div>
           <span className="text-xs text-textmuted font-medium truncate">Joanna Patterson</span>
-          <span className="ml-auto text-[9px] text-textmuted flex-shrink-0">{profileOpen ? '▲' : '▼'}</span>
+          <span className="ml-auto text-[9px] text-textmuted flex-shrink-0" aria-hidden="true">{profileOpen ? '▲' : '▼'}</span>
         </button>
 
         {profileOpen && (
@@ -101,16 +105,16 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
               onClick={() => setProfileOpen(false)}
               className="flex items-center gap-2.5 px-3 py-2.5 text-xs text-textmuted hover:text-textprimary hover:bg-white/5 transition"
             >
-              <Settings size={13} />
+              <Settings size={13} aria-hidden="true" />
               Settings
             </Link>
-            <div className="border-t border-border" />
+            <div className="border-t border-border" role="separator" />
             <button
               type="button"
               onClick={handleSignOut}
               className="flex items-center gap-2.5 w-full px-3 py-2.5 text-xs text-textmuted hover:text-red-400 hover:bg-red-500/5 transition"
             >
-              <LogOut size={13} />
+              <LogOut size={13} aria-hidden="true" />
               Sign Out
             </button>
           </div>
@@ -118,13 +122,14 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 space-y-1">
+      <nav className="flex-1 space-y-1" aria-label="Main navigation">
         {navItems.map(({ href, label, icon: Icon }) => {
           const active = pathname === href
           return (
             <Link
               key={href}
               href={href}
+              aria-current={active ? 'page' : undefined}
               className={clsx(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition',
                 active
@@ -132,7 +137,7 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
                   : 'text-textmuted hover:text-textprimary hover:bg-white/5'
               )}
             >
-              <Icon size={16} />
+              <Icon size={16} aria-hidden="true" />
               {label}
             </Link>
           )

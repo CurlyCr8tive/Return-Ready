@@ -16,7 +16,7 @@ export function ArchiveRow({ digest, future = false }: ArchiveRowProps) {
           <WeekBadge weekNumber={digest.week_number} className="mb-0.5" />
           <p className="text-sm text-textmuted">{digest.week_start}</p>
         </div>
-        <Lock size={14} className="text-textmuted" />
+        <Lock size={14} className="text-textmuted" aria-hidden="true" />
       </div>
     )
   }
@@ -29,7 +29,7 @@ export function ArchiveRow({ digest, future = false }: ArchiveRowProps) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-3 mb-1">
           <WeekBadge weekNumber={digest.week_number} />
-          <span className="text-xs text-textmuted">·</span>
+          <span className="text-xs text-textmuted" aria-hidden="true">·</span>
           <p className="text-xs font-mono text-textmuted">{digest.week_start}</p>
           {!digest.is_read && (
             <span className="px-1.5 py-0.5 text-xs bg-gold/10 text-gold rounded font-mono">New</span>
@@ -41,7 +41,7 @@ export function ArchiveRow({ digest, future = false }: ArchiveRowProps) {
       </div>
       <div className="flex-shrink-0 flex items-center gap-3 ml-4">
         <span className="text-xs text-textmuted">{digest.external_source_count} sources</span>
-        <span className="text-textmuted group-hover:text-gold transition text-sm">→</span>
+        <span className="text-textmuted group-hover:text-gold transition text-sm" aria-hidden="true">→</span>
       </div>
     </Link>
   )

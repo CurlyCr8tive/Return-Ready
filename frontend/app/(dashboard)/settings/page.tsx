@@ -166,6 +166,7 @@ export default function SettingsPage() {
             value={context}
             onChange={(e) => setContext(e.target.value)}
             rows={6}
+            aria-label="Pursuit context — describes Pursuit's mission and priorities for the AI digest"
             className="w-full bg-navy border border-border rounded-lg px-4 py-3 text-sm text-textprimary placeholder:text-textmuted focus:outline-none focus:border-gold/60 resize-none transition"
             placeholder="Describe Pursuit's mission, programs, and what Joanna should prioritize..."
           />

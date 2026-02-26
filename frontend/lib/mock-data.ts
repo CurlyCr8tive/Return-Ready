@@ -92,18 +92,21 @@ export const MOCK_DIGEST: Digest = {
       what_they_do: 'European AI lab building open-weight language models',
       why_watch_now: 'Released Mistral Large 2 this week — competitive with GPT-4o at lower cost, with stronger multilingual support',
       pursuit_relevance: 'Open-weight models matter for orgs training on proprietary data; strong multilingual models serve diverse learner populations',
+      url: null,
     },
     {
       name: 'Coursera',
       what_they_do: 'Online learning platform with 148M registered learners',
       why_watch_now: 'Announced AI Skills Index and new employer-sponsored AI credential tracks for workforce programs',
       pursuit_relevance: 'Coursera is positioning as the default for employer-sponsored upskilling — a potential partner or competitor in the workforce development AI training space',
+      url: null,
     },
     {
       name: 'Pave',
       what_they_do: 'Compensation benchmarking and planning software for HR teams',
       why_watch_now: 'Raised $110M Series C; adding AI-powered pay equity analysis and bias detection to their platform',
       pursuit_relevance: 'Tools that surface pay equity issues are relevant to Pursuit\'s employer partnerships and could support fellow salary negotiation coaching',
+      url: null,
     },
   ],
 
@@ -111,10 +114,10 @@ export const MOCK_DIGEST: Digest = {
     summary:
       'AI hiring activity was strong across enterprise software, fintech, and education technology this week. Demand is split between deep technical roles (ML engineers, AI researchers) and a fast-growing tier of AI-adjacent roles: prompt engineers, AI content reviewers, model trainers, and AI product managers. The latter category is increasingly accessible to bootcamp graduates.',
     key_insights: [
-      'Microsoft posted 340 AI-related roles this week, heaviest in Azure AI and Copilot product teams — mostly mid-level, 3-5 years experience',
-      'Duolingo, Khan Academy, and Chegg are all hiring AI curriculum specialists — roles that blend teaching background with basic prompting skills',
-      'Two Pursuit alumni employers (Peloton, Etsy) posted AI QA roles this week — flag for placement team to surface to recent graduates',
-      'Median salary for "AI Engineer" titles in NYC rose to $178K according to Levels.fyi data published this week',
+      { insight: 'Microsoft posted 340 AI-related roles this week, heaviest in Azure AI and Copilot product teams — mostly mid-level, 3-5 years experience', url: null },
+      { insight: 'Duolingo, Khan Academy, and Chegg are all hiring AI curriculum specialists — roles that blend teaching background with basic prompting skills', url: null },
+      { insight: 'Two Pursuit alumni employers (Peloton, Etsy) posted AI QA roles this week — flag for placement team to surface to recent graduates', url: null },
+      { insight: 'Median salary for "AI Engineer" titles in NYC rose to $178K according to Levels.fyi data published this week', url: null },
     ],
   },
 
