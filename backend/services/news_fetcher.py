@@ -64,7 +64,8 @@ Return as JSON only. No markdown. No preamble.
       "name": "Company",
       "what_they_do": "One sentence",
       "why_watch_now": "What happened this week",
-      "relevance": "Connection to workforce dev or tech careers"
+      "relevance": "Connection to workforce dev or tech careers",
+      "url": "Exact URL from scraped data for this company's news item, or null"
     }}
   ],
   "jobs_and_hiring": [
@@ -145,7 +146,8 @@ Return as JSON only. No markdown. No preamble.
       "name": "Company",
       "what_they_do": "One sentence",
       "why_watch_now": "What happened this week",
-      "relevance": "Connection to workforce dev"
+      "relevance": "Connection to workforce dev",
+      "url": "Direct article permalink about this company, or null"
     }
   ],
   "jobs_and_hiring": [

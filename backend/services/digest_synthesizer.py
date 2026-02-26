@@ -79,7 +79,8 @@ Return JSON only. No markdown. No preamble.
       "name": "Company name",
       "what_they_do": "One line",
       "why_watch_now": "What happened this week",
-      "pursuit_relevance": "Specific connection to workforce development or tech careers"
+      "pursuit_relevance": "Specific connection to workforce development or tech careers",
+      "url": "URL from source news item, or null"
     }}
   ],
 
@@ -165,8 +166,10 @@ async def generate_digest(week_start: date) -> dict:
             "companies_to_watch": [
                 {
                     "name": c.get("name", ""),
+                    "what_they_do": c.get("what_they_do", ""),
                     "why_watch_now": trim(c.get("why_watch_now", ""), 150),
                     "relevance": trim(c.get("relevance", ""), 150),
+                    "url": c.get("url"),
                 }
                 for c in data.get("companies_to_watch", [])[:4]
             ],

@@ -42,6 +42,7 @@ export type Digest = {
     what_they_do: string
     why_watch_now: string
     pursuit_relevance: string
+    url: string | null
   }>
   jobs_and_hiring: {
     summary: string

@@ -82,13 +82,36 @@ export function CompaniesSection({ items }: { items: Digest['companies_to_watch'
         Companies to Watch
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {items.map((co, i) => (
-          <div key={i} className="bg-navylight border border-border rounded-lg p-4">
-            <p className="font-semibold text-textprimary mb-1">{co.name}</p>
-            <p className="text-xs text-textmuted mb-2">{co.what_they_do}</p>
-            <p className="text-xs text-gold font-medium">{co.why_watch_now}</p>
-          </div>
-        ))}
+        {items.map((co, i) => {
+          const inner = (
+            <>
+              <div className="flex items-start justify-between gap-2 mb-1">
+                <p className="font-semibold text-textprimary leading-snug">{co.name}</p>
+                {co.url && (
+                  <span className="text-gold text-xs flex-shrink-0 opacity-60 group-hover:opacity-100 transition mt-0.5">↗</span>
+                )}
+              </div>
+              <p className="text-xs text-textmuted mb-2">{co.what_they_do}</p>
+              <p className="text-xs text-gold font-medium">{co.why_watch_now}</p>
+            </>
+          )
+
+          return co.url ? (
+            <a
+              key={i}
+              href={co.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group bg-navylight border border-border rounded-lg p-4 hover:border-gold/40 transition block"
+            >
+              {inner}
+            </a>
+          ) : (
+            <div key={i} className="bg-navylight border border-border rounded-lg p-4">
+              {inner}
+            </div>
+          )
+        })}
       </div>
     </section>
   )
