@@ -121,7 +121,8 @@ async def get_digest(digest_id: str) -> dict[str, Any]:
 
 @router.post("/generate")
 async def generate_digest(body: GenerateRequest = None) -> dict[str, Any]:
-    """Manually triggers digest generation."""
+    """Triggers digest generation as a background task to avoid gateway timeouts."""
+    import asyncio
     from services.digest_synthesizer import generate_digest as run_generate
 
     if body and body.week_start:
@@ -133,9 +134,12 @@ async def generate_digest(body: GenerateRequest = None) -> dict[str, Any]:
         today = date.today()
         week_start = today - timedelta(days=today.weekday())
 
-    result = await run_generate(week_start)
+    # Run generation in background so the HTTP response returns immediately
+    # (digest takes 60-90s — longer than Railway/Vercel gateway timeouts)
+    asyncio.create_task(run_generate(week_start))
 
-    if not result["success"]:
-        raise HTTPException(status_code=500, detail=result.get("error", "Generation failed"))
-
-    return result
+    return {
+        "success": True,
+        "message": "Digest generation started",
+        "week_start": str(week_start),
+    }
