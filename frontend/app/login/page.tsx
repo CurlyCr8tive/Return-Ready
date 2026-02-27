@@ -182,7 +182,7 @@ export default function LoginPage() {
             <span className={s.logoText}>CO</span>
           </div>
           <h1 className={s.title}>Connection OS</h1>
-          <p className={s.subtitle}>Dashboard Access</p>
+          <p className={s.subtitle}>Stay connected. Come back ready.</p>
         </div>
 
         {/* Card */}
@@ -194,7 +194,7 @@ export default function LoginPage() {
                 ? 'Use your existing email and password'
                 : mode === 'signup'
                   ? 'Create a secure account for dashboard access'
-                  : 'Private dashboard for Joanna Patterson'}
+                  : 'Your private AI digest'}
             </p>
           </div>
 
