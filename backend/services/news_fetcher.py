@@ -17,6 +17,27 @@ SCRAPER_SELECTION_PROMPT = """
 You are selecting and structuring AI news for Joanna Patterson,
 COO of Pursuit — a nonprofit that trains adults for tech careers in NYC.
 
+ABOUT PURSUIT AND JOANNA'S CONTEXT:
+Pursuit has a direct partnership with Anthropic. Staff are being trained
+as Claude experts, and Pursuit is rolling out a Builders program to help
+fellows become AI-native developers. Pursuit received $50K in Claude API
+credits and is a partner of the AI Justice Initiative (AIJI). The tools
+in active use are Claude Code (CLI) and Claude Cowork. Joanna is focused
+on how AI agents are reshaping the economy and what it means for
+underrepresented adults entering the tech workforce.
+
+PRIORITY COVERAGE — always prefer articles on these topics when present:
+- Anthropic and Claude news (model releases, Claude Code, Claude Cowork,
+  API updates, safety research) — HIGH PRIORITY given direct partnership
+- AI coding agents and developer tools (Claude Code, Cursor, Windsurf)
+  — directly relevant to Pursuit's Builders program
+- Economic impact of AI agents on jobs and the workforce
+  (speed of adoption, which roles are affected, earning power)
+- AI Justice Initiative (AIJI) and nonprofit AI credit/grant programs
+- AI tools for nonprofits and economic mobility programs
+- "80% of apps will disappear" / startup disruption themes
+  relevant to career counseling and program design
+
 Below is a list of articles scraped this week from AI news sources.
 Select only the most relevant and impactful items for a workforce
 development leader. Skip anything that is not genuinely AI-related
@@ -30,18 +51,23 @@ Select and return:
 1. TOP AI DEVELOPMENTS (3-5 items)
    Product launches, research breakthroughs, policy changes,
    major company moves. Real-world impact only — no hype.
+   Prioritize Anthropic/Claude news and AI agent developments.
    Use the article's actual URL exactly as provided.
 
 2. COMPANIES TO WATCH (3-4 items)
    Companies gaining AI traction relevant to education,
-   workforce development, or hiring tools.
+   workforce development, hiring tools, or AI coding agents.
 
 3. AI AND JOBS (2-3 items)
    AI hiring trends, skills in demand, workforce shifts.
+   Especially: how AI agents are reshaping which roles exist
+   and what skills lead to economic mobility.
 
 4. ONE FEATURED RESOURCE
    Single best article from the list for a COO
    thinking about AI's impact on workforce development.
+   Prefer pieces with strong leadership or economic framing
+   (e.g. Ezra Klein style analysis, YC founder perspectives).
    Use the article's actual URL exactly as provided.
 
 IMPORTANT: Copy URLs exactly from the scraped data.
@@ -91,21 +117,43 @@ NEWS_FETCH_PROMPT = """
 Search the web for the most important AI news
 and developments from the past 7 days.
 
-SOURCE COVERAGE REQUIREMENTS:
-Prioritize credible, direct-article sources that cover:
-- AI in Education
+AUDIENCE CONTEXT:
+This digest is for Joanna Patterson, COO of Pursuit — a nonprofit
+in NYC that trains underrepresented adults for tech careers.
+Pursuit has a direct partnership with Anthropic, $50K in Claude API
+credits, and is launching a Builders program to train fellows as
+AI-native developers using Claude Code. Pursuit is also partnered
+with the AI Justice Initiative (AIJI). Joanna needs to understand
+how AI agents are reshaping the economy, what it means for the
+workforce, and which tools and trends matter for her programs.
+
+PRIORITY TOPICS — always search for and include when credible news exists:
+- Anthropic and Claude (Claude Code, Claude Cowork, model releases,
+  API changes, safety research) — HIGH PRIORITY, direct partnership
+- AI coding agents and developer tools (Claude Code, Cursor, Windsurf,
+  Replit, GitHub Copilot) — relevant to Builders program
+- Economic impact of AI agents on the workforce: which jobs are
+  affected, speed of adoption, earning power, economic mobility
+- AI Justice Initiative (AIJI) and nonprofit AI programs/grants
+- AI tools for nonprofits, education, and workforce development orgs
+- Startup disruption: "80% of apps will disappear" / app layer collapse
+  themes relevant to career counseling
+- Policy: AI regulation, executive orders, federal investment in AI
+
+BROADER SECTOR COVERAGE — include when relevant news exists:
+- AI in Education and edtech
+- Civic Tech and government AI
+- Fintech and economic mobility
 - Health Tech
-- Civic Tech
-- Fintech
 - Climate Tech
 - Cybersecurity
 - Media / Creative Industries
-- Nonprofit funding for tech skills training and education
 
 Coverage guidance:
-- Aim to include meaningful developments across at least 4 of the sectors above when available.
-- Include at least 1 item related to nonprofit funding, grants, or philanthropic investment in tech skills training/education if credible coverage exists this week.
-- Do not fabricate coverage for missing sectors. If a sector has no meaningful update this week, skip it.
+- Always include at least 1 Anthropic or Claude item if published this week.
+- Always include at least 1 item on AI's economic impact on jobs/workforce.
+- Include nonprofit funding or AI grant news if credible coverage exists.
+- Do not fabricate coverage. If a topic has no meaningful update, skip it.
 
 Find and return:
 
@@ -113,24 +161,25 @@ Find and return:
    Product launches, research breakthroughs,
    policy changes, major company moves.
    Real-world impact only — no hype.
-   Prefer items connected to the sectors listed above.
+   Lead with Anthropic/Claude news if available this week.
 
 2. COMPANIES TO WATCH (3-4 items)
    Gaining traction in AI this week.
-   Relevant to the sectors above plus:
-   workforce development and hiring tools.
+   Include AI coding tool companies and
+   workforce/education-adjacent AI companies.
 
 3. AI AND JOBS (2-3 items)
-   Who is hiring in AI this week?
-   What skills are most in demand?
-   Any notable hiring trends?
-   Prioritize signals relevant to education, nonprofits,
-   and workforce-facing roles.
+   How AI agents are reshaping which roles exist.
+   What skills lead to economic mobility right now?
+   Any notable hiring trends or displacement signals?
+   Prioritize signals relevant to adults entering tech careers.
 
 4. ONE FEATURED RESOURCE
-   Single best article or report
-   published this week.
-   Practical and leadership-relevant.
+   Single best article, report, or video published this week.
+   Prefer strong leadership or economic framing —
+   e.g. Ezra Klein style workforce analysis, YC founder perspectives
+   on AI agents, or Anthropic product deep-dives.
+   Practical and relevant to a COO thinking about AI's impact.
 
 CRITICAL URL RULE:
 For every item that has a URL, you MUST search
