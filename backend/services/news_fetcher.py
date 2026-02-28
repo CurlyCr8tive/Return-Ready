@@ -109,16 +109,18 @@ Return as JSON only. No markdown. No preamble.
 # ── Companies to Watch: always web search, cross-industry AI adoption ────────
 
 COMPANIES_FETCH_PROMPT = """
-Search the web for companies across different industries that are meaningfully
-adopting or deploying AI in the past 7 days. This is for Joanna Patterson,
-COO of Pursuit — a nonprofit training underrepresented adults for tech careers.
+Search the web for 3 to 4 companies across different industries that are
+meaningfully adopting or deploying AI in the past 7 days. This is for
+Joanna Patterson, COO of Pursuit — a nonprofit training underrepresented
+adults for tech careers.
 
 DO NOT include Anthropic, OpenAI, Google, Apple, Microsoft, Meta, Amazon,
-or any major AI/Big Tech platform company. Those are covered elsewhere and
-Joanna already tracks them. Surface companies from non-tech industries —
-or smaller, less-obvious companies — integrating AI in notable ways.
+Salesforce, or any major AI/Big Tech platform company. Those are covered
+elsewhere and Joanna already tracks them. Surface companies from non-tech
+industries — or smaller, less-obvious companies — integrating AI in
+notable ways.
 
-PRIORITY SECTORS — aim to cover at least 4 of these:
+PRIORITY SECTORS — aim to cover at least 3 different sectors:
 - Education and edtech (AI tutors, adaptive learning, credentialing)
 - Health Tech (clinical AI, diagnostics, patient tools)
 - Civic Tech and government (city/state/federal AI deployments)
@@ -129,6 +131,7 @@ PRIORITY SECTORS — aim to cover at least 4 of these:
   receiving AI funding or adopting AI tools)
 - Media and Creative Industries (newsrooms, studios, content platforms)
 
+You MUST return at least 3 companies. Search across multiple sectors.
 For each company, find a direct article about what they announced or did
 this week — not a profile page, not their homepage.
 
@@ -150,6 +153,39 @@ Return as JSON only. No markdown. No preamble.
     }
   ]
 }
+"""
+
+# ── Scraper backup for companies (used when web search returns < 2) ───────────
+
+COMPANIES_SCRAPER_BACKUP_PROMPT = """
+From the scraped articles below, identify 2 to 4 companies that are
+meaningfully implementing or adopting AI. Focus on companies from
+non-tech industries. Do NOT include Google, Apple, Microsoft, Meta,
+Amazon, OpenAI, Anthropic, or Salesforce.
+
+Target sectors: Education, Health Tech, Fintech, Civic Tech,
+Climate Tech, Cybersecurity, Nonprofit, Media, or any non-tech industry.
+
+SCRAPED ARTICLES:
+{articles}
+
+Return only companies where there is a clear, specific article about
+their AI work. Use the exact URL from the scraped data.
+
+Return as JSON only. No markdown. No preamble.
+
+{{
+  "companies_to_watch": [
+    {{
+      "name": "Company name",
+      "industry": "Sector",
+      "what_they_do": "One sentence",
+      "why_watch_now": "What they did or announced with AI",
+      "relevance": "Why this matters for workforce development or economic mobility",
+      "url": "Exact URL from scraped data or null"
+    }}
+  ]
+}}
 """
 
 # ── Full web search fallback (used when no scraped data exists) ──────────────
@@ -293,16 +329,33 @@ def _parse_json_response(text: str) -> dict:
     return json.loads(clean.strip())
 
 
+BIG_TECH = {"google", "apple", "microsoft", "meta", "amazon", "openai", "anthropic", "salesforce"}
+
+
+def _filter_big_tech(companies: list) -> list:
+    return [c for c in companies if c.get("name", "").lower() not in BIG_TECH]
+
+
+def _dedupe_companies(companies: list) -> list:
+    seen, out = set(), []
+    for c in companies:
+        key = c.get("name", "").lower()
+        if key not in seen:
+            seen.add(key)
+            out.append(c)
+    return out
+
+
 async def fetch_companies_from_web() -> list:
     """
-    Always fetches Companies to Watch via Claude web search.
-    Returns a list of company objects, or [] on failure.
+    Fetches 3-4 Companies to Watch via Claude web search.
     Cross-industry focus: Education, Health, Civic, Fintech, Climate, etc.
+    Never includes Big Tech.
     """
     print("Fetching Companies to Watch via web search...")
     response = client.messages.create(
         model="claude-sonnet-4-6",
-        max_tokens=2000,
+        max_tokens=2500,
         tools=[{"type": "web_search_20250305", "name": "web_search"}],
         messages=[{"role": "user", "content": COMPANIES_FETCH_PROMPT}]
     )
@@ -314,24 +367,61 @@ async def fetch_companies_from_web() -> list:
 
     try:
         data = _parse_json_response(result_text)
-        return data.get("companies_to_watch", [])
+        return _filter_big_tech(data.get("companies_to_watch", []))
     except (json.JSONDecodeError, Exception) as e:
         print(f"Companies web search failed: {e}")
         return []
+
+
+async def fetch_companies_from_scraper_backup(condensed: list) -> list:
+    """
+    Fallback: extracts non-Big-Tech companies from scraped articles
+    when the web search returns fewer than 2 results.
+    """
+    print("Companies web search returned < 2 — using scraper backup...")
+    prompt = COMPANIES_SCRAPER_BACKUP_PROMPT.format(
+        articles=json.dumps(condensed, indent=2)
+    )
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=1500,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    try:
+        result_text = ""
+        for block in response.content:
+            if block.type == "text":
+                result_text += block.text  # type: ignore[union-attr]
+        data = _parse_json_response(result_text)
+        return _filter_big_tech(data.get("companies_to_watch", []))
+    except (json.JSONDecodeError, Exception) as e:
+        print(f"Scraper company backup failed: {e}")
+        return []
+
+
+async def _resolve_companies(web_companies: list, condensed_scraper: list | None = None) -> list:
+    """
+    Ensures at least 2 companies, max 4. Web search is primary;
+    scraper articles are the backup if web returns < 2.
+    """
+    companies = web_companies
+    if len(companies) < 2 and condensed_scraper:
+        backup = await fetch_companies_from_scraper_backup(condensed_scraper)
+        companies = _dedupe_companies(companies + backup)
+    return _filter_big_tech(companies)[:4]
 
 
 async def fetch_from_scraped(json_path: Path = SCRAPED_DATA_PATH) -> dict:
     """
     Reads scraped articles JSON and uses Claude (no web search)
     to select developments, jobs/skills, and featured resource.
-    Companies to Watch is always fetched separately via web search.
+    Companies to Watch always comes from web search; scraper is the backup.
     """
     with open(json_path) as f:
         scraped = json.load(f)
 
     articles = scraped.get("articles", [])
 
-    # Condense each article to keep token count low
     condensed = [
         {
             "title": a.get("title", ""),
@@ -354,14 +444,15 @@ async def fetch_from_scraped(json_path: Path = SCRAPED_DATA_PATH) -> dict:
         messages=[{"role": "user", "content": prompt}]
     )
 
-    result_text = response.content[0].text
+    result_text = next(  # type: ignore[union-attr]
+        block.text for block in response.content if block.type == "text"
+    )
 
     try:
         news_data = _parse_json_response(result_text)
 
-        # Always inject web-searched companies regardless of scraper result
-        companies = await fetch_companies_from_web()
-        news_data["companies_to_watch"] = companies
+        web_companies = await fetch_companies_from_web()
+        news_data["companies_to_watch"] = await _resolve_companies(web_companies, condensed)
 
         return {
             "success": True,
@@ -385,6 +476,8 @@ async def fetch_ai_news() -> dict:
     """
     Primary entry point. Uses scraped JSON if available (with web-searched
     companies always merged in), falls back to full Claude web search.
+    In the web-search-only path, also runs the dedicated companies fetch
+    so the section is always cross-industry, never Big Tech dominated.
     """
     if SCRAPED_DATA_PATH.exists():
         print(f"Using scraped data: {SCRAPED_DATA_PATH}")
@@ -406,6 +499,15 @@ async def fetch_ai_news() -> dict:
 
     try:
         news_data = _parse_json_response(result_text)
+
+        # Always run the dedicated companies search — the main web prompt
+        # tends to pick well-known names; the dedicated prompt surfaces
+        # cross-industry companies Joanna doesn't already track.
+        web_companies = await fetch_companies_from_web()
+        resolved = await _resolve_companies(web_companies)
+        if resolved:
+            news_data["companies_to_watch"] = resolved
+
         return {
             "success": True,
             "data": news_data,

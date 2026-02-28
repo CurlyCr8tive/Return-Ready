@@ -116,7 +116,7 @@ Return JSON only. No markdown. No preamble.
 
 QUALITY RULES — follow these exactly:
 → Include at most 1-2 Anthropic or Claude items in ai_developments — only include them if they are genuinely significant, not just because of the partnership; the digest should cover the full AI landscape
-→ Never open a pursuit_implication with "As Pursuit..." or "Many Pursuit employer partners..." — lead with the insight, not the org name
+→ Never open a pursuit_implication with "As Pursuit...", "Many Pursuit...", or "Pursuit employer partners..." — lead with the insight or action, not the org name. This rule applies to reasoning too.
 → pursuit_relevance and reasoning should read like sharp, natural analysis — not like org-chart boilerplate
 → NEVER include Google, Apple, Microsoft, Meta, Amazon, or OpenAI in companies_to_watch — Joanna already tracks these; focus on companies outside the core AI/Big Tech sphere
 → Every Pursuit implication must connect to workforce development, tech career training, the Builders program, the Anthropic partnership, or nonprofit ops — be specific
@@ -232,7 +232,9 @@ async def generate_digest(week_start: date) -> dict:
             }
           ]
         )
-        result_text = response.content[0].text
+        result_text = next(  # type: ignore[union-attr]
+            block.text for block in response.content if block.type == "text"
+        )
         break
       except anthropic.RateLimitError as e:
         print(f"Anthropic rate limit hit (attempt {attempt+1}/{max_retries}): {e}. Waiting {retry_delay}s...")
