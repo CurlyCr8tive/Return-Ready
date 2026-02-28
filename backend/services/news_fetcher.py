@@ -113,10 +113,10 @@ Search the web for companies across different industries that are meaningfully
 adopting or deploying AI in the past 7 days. This is for Joanna Patterson,
 COO of Pursuit — a nonprofit training underrepresented adults for tech careers.
 
-DO NOT focus on AI/tech companies themselves (Anthropic, OpenAI, Google, etc.)
-Those are covered in a separate section. Instead, surface companies from
-non-tech industries that are integrating AI into their products, services,
-or operations in notable ways.
+DO NOT include Anthropic, OpenAI, Google, Apple, Microsoft, Meta, Amazon,
+or any major AI/Big Tech platform company. Those are covered elsewhere and
+Joanna already tracks them. Surface companies from non-tech industries —
+or smaller, less-obvious companies — integrating AI in notable ways.
 
 PRIORITY SECTORS — aim to cover at least 4 of these:
 - Education and edtech (AI tutors, adaptive learning, credentialing)
@@ -196,8 +196,10 @@ Find and return:
    Lead with Anthropic/Claude news if available this week.
 
 2. COMPANIES TO WATCH (3-4 items)
-   Companies OUTSIDE the core AI industry that are meaningfully
-   adopting AI this week. Focus on non-tech industries:
+   Companies OUTSIDE the core AI/Big Tech sphere that are meaningfully
+   adopting AI this week. Do NOT include Google, Apple, Microsoft, Meta,
+   Amazon, OpenAI, or Anthropic — Joanna already tracks these.
+   Focus on non-tech industries or smaller, less-obvious companies:
    - Education (AI tutors, adaptive learning)
    - Health Tech (clinical AI, diagnostics)
    - Civic Tech / government deployments

@@ -61,7 +61,7 @@ Generate the digest in this exact JSON structure.
 Return JSON only. No markdown. No preamble.
 
 {{
-  "week_summary": "2-3 sentences. What was the dominant theme in AI this week? What should Joanna know first? If Anthropic or Claude had a major development, lead with it. Name specific companies and technologies — never be vague.",
+  "week_summary": "2-3 sentences. What was the dominant theme in AI this week? What should Joanna know first? Name specific companies and technologies — never be vague.",
 
   "ai_developments": [
     {{
@@ -77,8 +77,8 @@ Return JSON only. No markdown. No preamble.
 
   "pursuit_implications": [
     {{
-      "implication": "Direct specific statement. Never start with This could or This might. Start with an action or clear observation. Connect to the Anthropic partnership, Builders program, AIJI, Claude Code, or fellow placement where relevant.",
-      "reasoning": "1-2 sentences connecting this AI development to Pursuit's specific work — workforce development, tech career training, the Builders program, or the Anthropic partnership.",
+      "implication": "Direct specific statement. Never start with This could or This might. Start with an action or a clear observation. Do NOT start with 'As Pursuit' or name the organization in the opening clause — lead with the idea or the action.",
+      "reasoning": "1-2 sentences on why this matters for workforce development, tech career training, the Builders program, or the Anthropic partnership. Write naturally — do not mechanically repeat 'Pursuit' in every sentence. The reasoning should read like sharp analysis, not an org chart.",
       "priority": "HIGH or MEDIUM or WATCH"
     }}
   ],
@@ -89,16 +89,16 @@ Return JSON only. No markdown. No preamble.
       "industry": "Sector (Education, Health Tech, Fintech, Civic Tech, Climate Tech, Cybersecurity, Nonprofit, Media, or other)",
       "what_they_do": "One line",
       "why_watch_now": "What they did or announced with AI this week",
-      "pursuit_relevance": "Why this matters for Pursuit fellows, their future employers, or the Builders program",
+      "pursuit_relevance": "Why this matters for workforce development, fellows' future employers, or the Builders program — write naturally, not with org-name boilerplate",
       "url": "URL from source news item, or null"
     }}
   ],
 
   "jobs_and_hiring": {{
-    "summary": "2-3 sentences on AI adoption and job trends this week. Focus on how companies across industries are starting to use AI, which roles are growing, and what skills are in demand — not just in tech, but across all industries. Consider what this means for adults entering the workforce through programs like Pursuit.",
+    "summary": "2-3 sentences on AI adoption and job trends this week. Focus on how companies across industries are using AI, which roles are growing, and what skills are in demand across all industries — not just tech.",
     "key_insights": [
       {{
-        "insight": "Specific observation about AI adoption, emerging roles, or skills in demand — name companies, industries, and concrete trends. Flag anything directly relevant to Pursuit fellows or employers in the nonprofit sector.",
+        "insight": "Specific observation about AI adoption, emerging roles, or skills in demand — name companies, industries, and concrete trends where possible.",
         "url": "URL from the source news item this insight came from, or null"
       }}
     ]
@@ -108,14 +108,17 @@ Return JSON only. No markdown. No preamble.
     "title": "Full title",
     "publication": "Where published",
     "url": "URL or null",
-    "why_joanna": "One sentence — specific to her role at Pursuit. Reference the Anthropic partnership, Builders program, AIJI, or workforce development mission where applicable. Never generic.",
+    "why_joanna": "One sentence on why this is worth her time. Connect to workforce development, the Builders program, the Anthropic partnership, or economic mobility — but write it naturally, not as a fill-in-the-blank template.",
     "format": "Article or Video or Report",
     "read_time": "X min"
   }}
 }}
 
 QUALITY RULES — follow these exactly:
-→ If Anthropic or Claude released something this week, it must appear in ai_developments — Pursuit has a direct partnership
+→ Include at most 1-2 Anthropic or Claude items in ai_developments — only include them if they are genuinely significant, not just because of the partnership; the digest should cover the full AI landscape
+→ Never open a pursuit_implication with "As Pursuit..." or "Many Pursuit employer partners..." — lead with the insight, not the org name
+→ pursuit_relevance and reasoning should read like sharp, natural analysis — not like org-chart boilerplate
+→ NEVER include Google, Apple, Microsoft, Meta, Amazon, or OpenAI in companies_to_watch — Joanna already tracks these; focus on companies outside the core AI/Big Tech sphere
 → Every Pursuit implication must connect to workforce development, tech career training, the Builders program, the Anthropic partnership, or nonprofit ops — be specific
 → Never write vague implications — name technologies, programs, and impacts
 → Priority HIGH means act on return, MEDIUM means be aware, WATCH means monitor over time
