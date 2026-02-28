@@ -13,6 +13,9 @@ client = anthropic.Anthropic(
 # Path where the scraper drops its output
 SCRAPED_DATA_PATH = Path(__file__).resolve().parents[1] / "data" / "scraped_articles.json"
 
+# ── Scraper selection: developments, jobs, featured resource only ────────────
+# Companies to Watch is always fetched via web search (see COMPANIES_FETCH_PROMPT).
+
 SCRAPER_SELECTION_PROMPT = """
 You are selecting and structuring AI news for Joanna Patterson,
 COO of Pursuit — a nonprofit that trains adults for tech careers in NYC.
@@ -54,16 +57,15 @@ Select and return:
    Prioritize Anthropic/Claude news and AI agent developments.
    Use the article's actual URL exactly as provided.
 
-2. COMPANIES TO WATCH (3-4 items)
-   Companies gaining AI traction relevant to education,
-   workforce development, hiring tools, or AI coding agents.
+2. JOBS & SKILLS (2-3 items)
+   How are companies across industries starting to use AI?
+   Which tech and AI-forward roles are growing?
+   What skills are in demand — across all industries, not just tech?
+   Focus on adoption trends, role shifts, and what skills lead
+   to economic mobility right now.
+   Use the article's actual URL exactly as provided.
 
-3. AI AND JOBS (2-3 items)
-   AI hiring trends, skills in demand, workforce shifts.
-   Especially: how AI agents are reshaping which roles exist
-   and what skills lead to economic mobility.
-
-4. ONE FEATURED RESOURCE
+3. ONE FEATURED RESOURCE
    Single best article from the list for a COO
    thinking about AI's impact on workforce development.
    Prefer pieces with strong leadership or economic framing
@@ -85,18 +87,9 @@ Return as JSON only. No markdown. No preamble.
       "url": "Exact URL from scraped data"
     }}
   ],
-  "companies_to_watch": [
-    {{
-      "name": "Company",
-      "what_they_do": "One sentence",
-      "why_watch_now": "What happened this week",
-      "relevance": "Connection to workforce dev or tech careers",
-      "url": "Exact URL from scraped data for this company's news item, or null"
-    }}
-  ],
   "jobs_and_hiring": [
     {{
-      "insight": "Specific observation",
+      "insight": "Specific observation about AI adoption, job trends, or in-demand skills",
       "source": "Publication name",
       "url": "Exact URL from scraped data for this item, or null"
     }}
@@ -112,6 +105,54 @@ Return as JSON only. No markdown. No preamble.
   }}
 }}
 """
+
+# ── Companies to Watch: always web search, cross-industry AI adoption ────────
+
+COMPANIES_FETCH_PROMPT = """
+Search the web for companies across different industries that are meaningfully
+adopting or deploying AI in the past 7 days. This is for Joanna Patterson,
+COO of Pursuit — a nonprofit training underrepresented adults for tech careers.
+
+DO NOT focus on AI/tech companies themselves (Anthropic, OpenAI, Google, etc.)
+Those are covered in a separate section. Instead, surface companies from
+non-tech industries that are integrating AI into their products, services,
+or operations in notable ways.
+
+PRIORITY SECTORS — aim to cover at least 4 of these:
+- Education and edtech (AI tutors, adaptive learning, credentialing)
+- Health Tech (clinical AI, diagnostics, patient tools)
+- Civic Tech and government (city/state/federal AI deployments)
+- Fintech (lending, banking, fraud detection, economic access)
+- Climate Tech (energy, sustainability, environmental monitoring)
+- Cybersecurity (AI-powered threat detection, compliance)
+- Nonprofit and social sector (workforce training, community orgs
+  receiving AI funding or adopting AI tools)
+- Media and Creative Industries (newsrooms, studios, content platforms)
+
+For each company, find a direct article about what they announced or did
+this week — not a profile page, not their homepage.
+
+CRITICAL URL RULE:
+Return the direct permalink to the specific news article, not a homepage
+or roundup. If you cannot find a direct article URL, set url to null.
+
+Return as JSON only. No markdown. No preamble.
+
+{
+  "companies_to_watch": [
+    {
+      "name": "Company name",
+      "industry": "One of the sectors above",
+      "what_they_do": "One sentence — what the company does overall",
+      "why_watch_now": "What they announced or did with AI this week",
+      "relevance": "Why this matters for workforce development or economic mobility",
+      "url": "Direct article permalink or null"
+    }
+  ]
+}
+"""
+
+# ── Full web search fallback (used when no scraped data exists) ──────────────
 
 NEWS_FETCH_PROMPT = """
 Search the web for the most important AI news
@@ -140,15 +181,6 @@ PRIORITY TOPICS — always search for and include when credible news exists:
   themes relevant to career counseling
 - Policy: AI regulation, executive orders, federal investment in AI
 
-BROADER SECTOR COVERAGE — include when relevant news exists:
-- AI in Education and edtech
-- Civic Tech and government AI
-- Fintech and economic mobility
-- Health Tech
-- Climate Tech
-- Cybersecurity
-- Media / Creative Industries
-
 Coverage guidance:
 - Always include at least 1 Anthropic or Claude item if published this week.
 - Always include at least 1 item on AI's economic impact on jobs/workforce.
@@ -164,15 +196,25 @@ Find and return:
    Lead with Anthropic/Claude news if available this week.
 
 2. COMPANIES TO WATCH (3-4 items)
-   Gaining traction in AI this week.
-   Include AI coding tool companies and
-   workforce/education-adjacent AI companies.
+   Companies OUTSIDE the core AI industry that are meaningfully
+   adopting AI this week. Focus on non-tech industries:
+   - Education (AI tutors, adaptive learning)
+   - Health Tech (clinical AI, diagnostics)
+   - Civic Tech / government deployments
+   - Fintech (lending, banking, fraud detection)
+   - Climate Tech
+   - Cybersecurity
+   - Nonprofit / social sector (workforce orgs, AI grants)
+   - Media and Creative Industries
+   For each company, note what they did with AI this week and
+   why it matters for economic mobility or workforce development.
 
-3. AI AND JOBS (2-3 items)
-   How AI agents are reshaping which roles exist.
-   What skills lead to economic mobility right now?
-   Any notable hiring trends or displacement signals?
-   Prioritize signals relevant to adults entering tech careers.
+3. JOBS & SKILLS (2-3 items)
+   How are companies across industries starting to use AI?
+   Which tech and AI-forward roles are growing or emerging?
+   What skills are in demand across all industries, not just tech?
+   Focus on adoption trends, role shifts, and what skills create
+   economic mobility for adults entering or re-entering tech careers.
 
 4. ONE FEATURED RESOURCE
    Single best article, report, or video published this week.
@@ -213,17 +255,18 @@ Return as JSON only. No markdown. No preamble.
   "companies_to_watch": [
     {
       "name": "Company",
+      "industry": "Sector (Education, Health Tech, Fintech, etc.)",
       "what_they_do": "One sentence",
-      "why_watch_now": "What happened this week",
-      "relevance": "Connection to workforce dev",
+      "why_watch_now": "What they did with AI this week",
+      "relevance": "Connection to workforce dev or economic mobility",
       "url": "Direct article permalink about this company, or null"
     }
   ],
   "jobs_and_hiring": [
     {
-      "insight": "Specific observation",
+      "insight": "Specific observation about AI adoption, job trends, or in-demand skills",
       "source": "Where this comes from",
-      "url": "Direct article permalink about this jobs item, or null"
+      "url": "Direct article permalink about this item, or null"
     }
   ],
   "featured_resource": {
@@ -248,11 +291,38 @@ def _parse_json_response(text: str) -> dict:
     return json.loads(clean.strip())
 
 
+async def fetch_companies_from_web() -> list:
+    """
+    Always fetches Companies to Watch via Claude web search.
+    Returns a list of company objects, or [] on failure.
+    Cross-industry focus: Education, Health, Civic, Fintech, Climate, etc.
+    """
+    print("Fetching Companies to Watch via web search...")
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=2000,
+        tools=[{"type": "web_search_20250305", "name": "web_search"}],
+        messages=[{"role": "user", "content": COMPANIES_FETCH_PROMPT}]
+    )
+
+    result_text = ""
+    for block in response.content:
+        if block.type == "text":
+            result_text += block.text
+
+    try:
+        data = _parse_json_response(result_text)
+        return data.get("companies_to_watch", [])
+    except (json.JSONDecodeError, Exception) as e:
+        print(f"Companies web search failed: {e}")
+        return []
+
+
 async def fetch_from_scraped(json_path: Path = SCRAPED_DATA_PATH) -> dict:
     """
     Reads scraped articles JSON and uses Claude (no web search)
-    to select and structure the most relevant items.
-    Much cheaper than web search and guarantees real article URLs.
+    to select developments, jobs/skills, and featured resource.
+    Companies to Watch is always fetched separately via web search.
     """
     with open(json_path) as f:
         scraped = json.load(f)
@@ -286,10 +356,15 @@ async def fetch_from_scraped(json_path: Path = SCRAPED_DATA_PATH) -> dict:
 
     try:
         news_data = _parse_json_response(result_text)
+
+        # Always inject web-searched companies regardless of scraper result
+        companies = await fetch_companies_from_web()
+        news_data["companies_to_watch"] = companies
+
         return {
             "success": True,
             "data": news_data,
-            "source": "scraper",
+            "source": "scraper+web",
             "source_count": (
                 len(news_data.get("developments", [])) +
                 len(news_data.get("companies_to_watch", [])) +
@@ -306,8 +381,8 @@ async def fetch_from_scraped(json_path: Path = SCRAPED_DATA_PATH) -> dict:
 
 async def fetch_ai_news() -> dict:
     """
-    Primary entry point. Uses scraped JSON if available,
-    falls back to Claude web search.
+    Primary entry point. Uses scraped JSON if available (with web-searched
+    companies always merged in), falls back to full Claude web search.
     """
     if SCRAPED_DATA_PATH.exists():
         print(f"Using scraped data: {SCRAPED_DATA_PATH}")

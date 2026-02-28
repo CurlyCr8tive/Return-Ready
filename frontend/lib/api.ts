@@ -50,6 +50,7 @@ export type Digest = {
   }>
   companies_to_watch: Array<{
     name: string
+    industry?: string
     what_they_do: string
     why_watch_now: string
     pursuit_relevance: string

@@ -69,18 +69,19 @@ Return JSON only. No markdown. No preamble.
   "companies_to_watch": [
     {{
       "name": "Company name",
+      "industry": "Sector (Education, Health Tech, Fintech, Civic Tech, Climate Tech, Cybersecurity, Nonprofit, Media, or other)",
       "what_they_do": "One line",
-      "why_watch_now": "What happened this week",
+      "why_watch_now": "What they did or announced with AI this week",
       "pursuit_relevance": "Specific connection to workforce development or tech careers",
       "url": "URL from source news item, or null"
     }}
   ],
 
   "jobs_and_hiring": {{
-    "summary": "2-3 sentences on the AI jobs market this week.",
+    "summary": "2-3 sentences on AI adoption and job trends this week. Focus on how companies across industries are starting to use AI, which roles are growing, and what skills are in demand — not just in tech, but across all industries.",
     "key_insights": [
       {{
-        "insight": "Specific observation — name companies and roles where possible",
+        "insight": "Specific observation about AI adoption, emerging roles, or skills in demand — name companies, industries, and concrete trends where possible",
         "url": "URL from the source news item this insight came from, or null"
       }}
     ]
@@ -162,6 +163,7 @@ async def generate_digest(week_start: date) -> dict:
             "companies_to_watch": [
                 {
                     "name": c.get("name", ""),
+                    "industry": c.get("industry", ""),
                     "what_they_do": c.get("what_they_do", ""),
                     "why_watch_now": trim(c.get("why_watch_now", ""), 150),
                     "relevance": trim(c.get("relevance", ""), 150),

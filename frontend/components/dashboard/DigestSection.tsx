@@ -114,6 +114,11 @@ export function CompaniesSection({ items }: { items: Digest['companies_to_watch'
                   <span className="mt-0.5 flex-shrink-0 text-xs text-gold opacity-60 transition group-hover:opacity-100" aria-hidden="true">↗</span>
                 )}
               </div>
+              {co.industry && (
+                <span className="mb-2 inline-block rounded-full border border-teal-500/30 bg-teal-500/10 px-2 py-0.5 text-xs font-medium text-teal-400">
+                  {co.industry}
+                </span>
+              )}
               <p className="mb-2 text-sm text-textmuted">{co.what_they_do}</p>
               <p className="text-sm font-medium text-gold">{co.why_watch_now}</p>
             </>
