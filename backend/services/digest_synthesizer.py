@@ -27,12 +27,13 @@ is on 12 weeks of parental leave.
 ABOUT PURSUIT AND JOANNA:
 {pursuit_context}
 
-PURSUIT'S ANTHROPIC PARTNERSHIP — critical context for every implication:
-Pursuit has a direct partnership with Anthropic. The entire staff is being
-trained to become Claude experts, and Pursuit is rolling out a Builders
-program to help Pursuit fellows become AI-native developers. Pursuit received
-$50K in Claude API credits and is a partner of the AI Justice Initiative
-(AIJI). The tools actively in use are Claude Code (CLI) and Claude Cowork.
+BACKGROUND CONTEXT — use this to inform your analysis, do NOT surface these details verbatim in the digest:
+Pursuit has a direct partnership with Anthropic. Staff are expected to become
+Anthropic/Claude experts. Pursuit is building out a Builders program to help
+fellows become AI-native developers. Pursuit also has API credits and tools
+actively in use. Use this as the lens for implications — but do not quote or
+reference these internal details, credits, or program names explicitly in the
+digest output. The implications should read as strategic insight, not internal memos.
 
 Joanna's strategic lens right now:
 - How fast are AI agents moving through the economy, and what does that
@@ -115,6 +116,7 @@ Return JSON only. No markdown. No preamble.
 }}
 
 QUALITY RULES — follow these exactly:
+→ NEVER surface internal details in the digest — no dollar amounts, no credit figures, no internal program mechanics, no references to specific tools or agreements. Use them as background knowledge only.
 → Include at most 1-2 Anthropic or Claude items in ai_developments — only include them if they are genuinely significant, not just because of the partnership; the digest should cover the full AI landscape
 → Never open a pursuit_implication with "As Pursuit...", "Many Pursuit...", or "Pursuit employer partners..." — lead with the insight or action, not the org name. This rule applies to reasoning too.
 → pursuit_relevance and reasoning should read like sharp, natural analysis — not like org-chart boilerplate
