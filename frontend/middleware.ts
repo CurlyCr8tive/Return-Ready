@@ -7,7 +7,8 @@ export async function middleware(req: NextRequest) {
   const isAuthRoute =
     pathname.startsWith('/login') ||
     pathname.startsWith('/reset-password') ||
-    pathname.startsWith('/api/auth')
+    pathname.startsWith('/api/auth') ||
+    pathname.startsWith('/demo')
 
   // Allow auth entry/reset routes through
   if (isAuthRoute) {
