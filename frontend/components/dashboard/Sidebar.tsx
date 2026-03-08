@@ -146,6 +146,33 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
         })}
       </nav>
 
+      {/* Digest section nav — only on digest pages */}
+      {pathname.startsWith('/digest/') && (
+        <div className="mt-4 border-t border-border pt-4">
+          <p className="mb-2 px-3 font-mono text-[9px] uppercase tracking-widest text-textmuted/50">
+            Jump to
+          </p>
+          <div className="space-y-0.5">
+            {[
+              { id: 'developments', label: 'AI This Week' },
+              { id: 'implications', label: 'Why It Matters' },
+              { id: 'jobs',         label: 'Jobs & Skills' },
+              { id: 'companies',    label: 'Companies' },
+              { id: 'featured',     label: 'One Thing to Read' },
+            ].map(({ id, label }) => (
+              <a
+                key={id}
+                href={`#${id}`}
+                className="flex items-center gap-2 rounded-md px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-textmuted transition hover:bg-white/5 hover:text-gold"
+              >
+                <span className="h-px w-2.5 flex-shrink-0 bg-textmuted/30" aria-hidden="true" />
+                {label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Progress + greeting */}
       <div className="mt-auto pt-6 border-t border-border">
         {(() => {
