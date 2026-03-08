@@ -23,7 +23,7 @@ function normalizeSlackItems(data: Digest['slack_highlights']): string[] {
 
 export function DevelopmentsSection({ items }: { items: Digest['ai_developments'] }) {
   return (
-    <section>
+    <section id="developments">
       <h2 className="mb-4 border-b border-border pb-3 text-xs font-mono font-semibold uppercase tracking-widest text-gold sm:mb-5">
         What Happened in AI This Week
       </h2>
@@ -79,7 +79,7 @@ export function SlackSection({ data }: { data: Digest['slack_highlights'] }) {
 
 export function ImplicationsSection({ items }: { items: Digest['pursuit_implications'] }) {
   return (
-    <section className="rounded-xl border border-gold/20 bg-gold/5 p-4 sm:p-5 md:p-6">
+    <section id="implications" className="rounded-xl border border-gold/20 bg-gold/5 p-4 sm:p-5 md:p-6">
       <h2 className="mb-4 text-xs font-mono font-semibold uppercase tracking-widest text-gold sm:mb-5">
         Why This Matters for Pursuit
       </h2>
@@ -100,7 +100,7 @@ export function ImplicationsSection({ items }: { items: Digest['pursuit_implicat
 
 export function CompaniesSection({ items }: { items: Digest['companies_to_watch'] }) {
   return (
-    <section>
+    <section id="companies">
       <h2 className="mb-4 border-b border-border pb-3 text-xs font-mono font-semibold uppercase tracking-widest text-gold sm:mb-5">
         Companies to Watch
       </h2>
@@ -148,7 +148,7 @@ export function CompaniesSection({ items }: { items: Digest['companies_to_watch'
 
 export function JobsSection({ data }: { data: Digest['jobs_and_hiring'] }) {
   return (
-    <section>
+    <section id="jobs">
       <h2 className="mb-4 border-b border-border pb-3 text-xs font-mono font-semibold uppercase tracking-widest text-gold">
         Jobs &amp; Skills in Demand
       </h2>
@@ -179,7 +179,7 @@ export function JobsSection({ data }: { data: Digest['jobs_and_hiring'] }) {
 
 export function FeaturedSection({ data }: { data: Digest['featured_resource'] }) {
   return (
-    <section className="rounded-xl border border-border bg-navy p-4 sm:p-5 md:p-6">
+    <section id="featured" className="rounded-xl border border-border bg-navy p-4 sm:p-5 md:p-6">
       <p className="mb-4 text-xs font-mono font-semibold uppercase tracking-widest text-gold" aria-hidden="true">
         One Thing to Read
       </p>

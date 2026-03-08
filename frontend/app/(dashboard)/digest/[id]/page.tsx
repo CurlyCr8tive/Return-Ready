@@ -11,6 +11,7 @@ import {
   JobsSection,
   FeaturedSection,
 } from '@/components/dashboard/DigestSection'
+import { DigestNav } from '@/components/dashboard/DigestNav'
 
 export const dynamic = 'force-dynamic'
 
@@ -54,6 +55,9 @@ export default async function DigestPage({ params }: { params: { id: string } })
       <p className="mb-8 border-b border-border pb-7 text-base leading-relaxed text-textprimary/92 sm:mb-10 sm:pb-8 sm:text-lg">
         {digest.week_summary}
       </p>
+
+      {/* Sticky section nav */}
+      <DigestNav />
 
       {/* Sections */}
       <div className="space-y-8 sm:space-y-10">
