@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import s from './login.module.css'
@@ -401,6 +402,18 @@ export default function LoginPage() {
             </form>
           )}
         </div>
+
+        {/* Demo CTA */}
+        <div className="mt-4 text-center">
+          <Link
+            href="/demo/dashboard"
+            className="inline-block w-full rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-sm font-semibold text-teal-400 transition hover:bg-teal-500/20"
+          >
+            View Demo Dashboard →
+          </Link>
+          <p className="mt-2 text-xs text-slate-600">No login required · sample data</p>
+        </div>
+
       </div>
     </div>
   )
