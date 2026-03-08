@@ -11,7 +11,6 @@ import {
   JobsSection,
   FeaturedSection,
 } from '@/components/dashboard/DigestSection'
-import { DigestNav } from '@/components/dashboard/DigestNav'
 
 export const dynamic = 'force-dynamic'
 
@@ -57,7 +56,23 @@ export default async function DigestPage({ params }: { params: { id: string } })
       </p>
 
       {/* Sticky section nav */}
-      <DigestNav />
+      <nav className="sticky top-0 z-20 mb-8 flex gap-0 overflow-x-auto border-b border-gold/20 bg-navylight">
+        {[
+          { id: 'developments', label: 'What Happened in AI' },
+          { id: 'implications', label: 'Why It Matters' },
+          { id: 'jobs',         label: 'Jobs & Skills' },
+          { id: 'companies',    label: 'Companies to Watch' },
+          { id: 'featured',     label: 'One Thing to Read' },
+        ].map(({ id, label }) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            className="whitespace-nowrap px-3 py-3 font-mono text-[10px] font-semibold uppercase tracking-widest text-textmuted transition hover:text-gold sm:px-4 sm:text-xs"
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
 
       {/* Sections */}
       <div className="space-y-8 sm:space-y-10">
