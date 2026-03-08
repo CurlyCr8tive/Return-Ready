@@ -1,7 +1,7 @@
 .page {
   position: relative;
   min-height: 100dvh;
-  overflow: hidden;
+  overflow: clip;
   background:
     radial-gradient(ellipse at 14% 42%, rgba(47, 112, 156, 0.28) 0%, rgba(18, 40, 72, 0.18) 36%, transparent 68%),
     radial-gradient(ellipse at 86% 42%, rgba(47, 112, 156, 0.28) 0%, rgba(18, 40, 72, 0.18) 36%, transparent 68%),
