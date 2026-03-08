@@ -1,5 +1,5 @@
 import { ScrollOrbs } from '@/components/dashboard/ScrollOrbs'
-import s from '../(dashboard)/dashboard.module.css'
+import s from '@/app/(dashboard)/dashboard.module.css'
 
 export default function DemoLayout({ children }: { children: React.ReactNode }) {
   return (
