@@ -5,6 +5,7 @@
   min-height: 100vh;
   padding: 1.5rem;
   background: linear-gradient(135deg, #0a1628 0%, #1a2332 100%);
+  outline: none; /* Remove focus outline since this is programmatically focused */
 }
 
 .errorCard {

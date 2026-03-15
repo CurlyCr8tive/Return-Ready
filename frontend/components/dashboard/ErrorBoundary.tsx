@@ -1,43 +1,65 @@
 'use client'
 
-import { Component, type ReactNode } from 'react'
+import { Component, type ReactNode, type ErrorInfo } from 'react'
+import { usePathname } from 'next/navigation'
 import s from './ErrorBoundary.module.css'
 
 interface ErrorBoundaryProps {
   children: ReactNode
+  onError?: (error: Error, errorInfo: ErrorInfo) => void
 }
 
 interface ErrorBoundaryState {
   hasError: boolean
   error: Error | null
+  errorInfo: ErrorInfo | null
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  private errorContainerRef: HTMLDivElement | null = null
+
   constructor(props: ErrorBoundaryProps) {
     super(props)
-    this.state = { hasError: false, error: null }
+    this.state = { hasError: false, error: null, errorInfo: null }
   }
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
     return { hasError: true, error }
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Log to console for debugging
     console.error('ErrorBoundary caught an error:', error, errorInfo)
     
-    // TODO: Send to error tracking service (e.g., Sentry)
-    // logErrorToService(error, errorInfo)
+    // Store errorInfo in state for display
+    this.setState({ errorInfo })
+    
+    // Call optional error handler prop
+    this.props.onError?.(error, errorInfo)
+  }
+
+  componentDidUpdate(_prevProps: ErrorBoundaryProps, prevState: ErrorBoundaryState) {
+    // Focus the error container when error occurs for accessibility
+    if (!prevState.hasError && this.state.hasError && this.errorContainerRef) {
+      this.errorContainerRef.focus()
+    }
   }
 
   handleReset = () => {
-    this.setState({ hasError: false, error: null })
+    this.setState({ hasError: false, error: null, errorInfo: null })
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className={s.errorContainer}>
+        <div 
+          ref={(el) => { this.errorContainerRef = el }}
+          className={s.errorContainer}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          tabIndex={-1}
+        >
           <div className={s.errorCard}>
             <div className={s.iconWrapper}>
               <svg
@@ -67,8 +89,18 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <details className={s.errorDetails}>
                 <summary className={s.errorSummary}>Error details (dev only)</summary>
                 <pre className={s.errorStack}>
-                  {this.state.error.toString()}
+                  <strong>Error:</strong> {this.state.error.toString()}
+                  {'\n\n'}
+                  <strong>Stack:</strong>
+                  {'\n'}
                   {this.state.error.stack}
+                  {this.state.errorInfo?.componentStack && (
+                    <>
+                      {'\n\n'}
+                      <strong>Component Stack:</strong>
+                      {this.state.errorInfo.componentStack}
+                    </>
+                  )}
                 </pre>
               </details>
             )}
@@ -97,4 +129,21 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     return this.props.children
   }
+}
+
+// Wrapper component to reset error boundary on route change
+export function ErrorBoundaryWithReset({ 
+  children, 
+  onError 
+}: { 
+  children: ReactNode
+  onError?: (error: Error, errorInfo: ErrorInfo) => void
+}) {
+  const pathname = usePathname()
+  
+  return (
+    <ErrorBoundary key={pathname} onError={onError}>
+      {children}
+    </ErrorBoundary>
+  )
 }
