@@ -1,5 +1,6 @@
 import { Sidebar } from '@/components/dashboard/Sidebar'
 import { ScrollOrbs } from '@/components/dashboard/ScrollOrbs'
+import { ErrorBoundary } from '@/components/dashboard/ErrorBoundary'
 import s from './dashboard.module.css'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -74,7 +75,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Main content */}
         <main id="main-content" className={s.mainWrap}>
           <div className={s.panel}>
-            {children}
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
           </div>
         </main>
       </div>
