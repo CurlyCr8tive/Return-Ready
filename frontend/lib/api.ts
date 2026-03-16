@@ -102,6 +102,7 @@ export type Settings = {
   email_send_time: string
   slack_connected: boolean
   slack_channel: string
+  slack_token: string | null
   slack_last_synced: string | null
   updated_at: string
 }
@@ -126,6 +127,11 @@ export const settingsAPI = {
       body: JSON.stringify(payload),
     }),
   sendTestEmail: () => fetchAPI<{ success: boolean; email_id: string }>('/settings/send-test-email', { method: 'POST' }),
+  testSlack: (payload: { token: string; channel_id: string }) =>
+    fetchAPI<{ success: boolean; channel_name?: string; error?: string }>('/settings/test-slack', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
   getEmailLog: () =>
     fetchAPI<{ email_log: Array<{ id: string; week_number: number; subject: string; sent_to: string; sent_at: string; status: string }> }>(
       '/settings/email-log'

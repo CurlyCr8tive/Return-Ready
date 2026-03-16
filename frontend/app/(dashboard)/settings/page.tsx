@@ -16,16 +16,48 @@ export default function SettingsPage() {
   const [emailStatus, setEmailStatus] = useState<string | null>(null)
   const [savedContext, setSavedContext] = useState(false)
   const [context, setContext] = useState('')
+  const [slackToken, setSlackToken] = useState('')
+  const [slackChannel, setSlackChannel] = useState('C06UJHN147J')
+  const [slackStatus, setSlackStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle')
+  const [slackError, setSlackError] = useState<string | null>(null)
 
   useEffect(() => {
     settingsAPI.get()
       .then(res => {
         setSettings(res.settings)
         setContext(res.settings.pursuit_context || '')
+        if (res.settings.slack_channel) setSlackChannel(res.settings.slack_channel)
       })
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [])
+
+  const testAndConnectSlack = async () => {
+    setSlackStatus('testing')
+    setSlackError(null)
+    try {
+      const result = await settingsAPI.testSlack({ token: slackToken, channel_id: slackChannel })
+      if (result.success) {
+        setSlackStatus('success')
+        setSettings(s => s ? { ...s, slack_connected: true, slack_channel: slackChannel } : s)
+        setSlackToken('')
+      } else {
+        setSlackStatus('error')
+        setSlackError(result.error || 'Connection failed')
+      }
+    } catch {
+      setSlackStatus('error')
+      setSlackError('Could not reach server')
+    }
+  }
+
+  const disconnectSlack = async () => {
+    await settingsAPI.update({ slack_connected: false, slack_token: '' })
+    setSettings(s => s ? { ...s, slack_connected: false } : s)
+    setSlackToken('')
+    setSlackStatus('idle')
+    setSlackError(null)
+  }
 
   const updateSetting = async (key: keyof Settings, value: unknown) => {
     if (!settings) return
@@ -90,12 +122,65 @@ export default function SettingsPage() {
               onChange={(v) => updateSetting('external_news_enabled', v)}
             />
           </div>
-          <div className="flex items-center justify-between px-5 py-4 opacity-40">
-            <div>
-              <p className="text-sm font-medium text-textprimary">Slack · #ai channel</p>
-              <p className="text-xs text-textmuted mt-0.5">Coming soon — Phase 2</p>
+          <div className="px-5 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-textprimary">Slack · #ai channel</p>
+                <p className="text-xs text-textmuted mt-0.5">
+                  {settings.slack_connected ? 'Connected' : 'Not connected'}
+                </p>
+              </div>
+              {settings.slack_connected && (
+                <Toggle
+                  checked={settings.slack_connected}
+                  onChange={(v) => { if (!v) disconnectSlack() }}
+                />
+              )}
             </div>
-            <Toggle checked={false} onChange={() => {}} disabled />
+
+            {!settings.slack_connected && (
+              <div className="mt-4 space-y-3">
+                <div>
+                  <label className="block text-xs text-textmuted mb-1">Bot Token</label>
+                  <input
+                    type="password"
+                    value={slackToken}
+                    onChange={(e) => setSlackToken(e.target.value)}
+                    placeholder="xoxb-..."
+                    className="w-full bg-navy border border-border rounded-lg px-3 py-2 text-sm text-textprimary placeholder:text-textmuted focus:outline-none focus:border-gold/60"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-textmuted mb-1">Channel ID</label>
+                  <input
+                    type="text"
+                    value={slackChannel}
+                    onChange={(e) => setSlackChannel(e.target.value)}
+                    placeholder="C06UJHN147J"
+                    className="w-full bg-navy border border-border rounded-lg px-3 py-2 text-sm text-textprimary placeholder:text-textmuted focus:outline-none focus:border-gold/60"
+                  />
+                </div>
+                <Button
+                  size="sm"
+                  onClick={testAndConnectSlack}
+                  disabled={!slackToken || slackStatus === 'testing'}
+                >
+                  {slackStatus === 'testing' ? 'Testing…' : 'Test & Connect'}
+                </Button>
+                {slackStatus === 'error' && (
+                  <p className="text-xs text-red-400">{slackError}</p>
+                )}
+              </div>
+            )}
+
+            {settings.slack_connected && (
+              <button
+                onClick={disconnectSlack}
+                className="mt-3 text-xs text-textmuted hover:text-red-400 transition"
+              >
+                Disconnect
+              </button>
+            )}
           </div>
         </div>
       </section>
