@@ -23,7 +23,7 @@ COO of Pursuit — a nonprofit that trains adults for tech careers in NYC.
 ABOUT PURSUIT AND JOANNA'S CONTEXT:
 Pursuit has a direct partnership with Anthropic. Staff are being trained
 as Claude experts, and Pursuit is rolling out a Builders program to help
-fellows become AI-native developers. Pursuit received $50K in Claude API
+students (called builders or AI natives) become AI-native developers. Pursuit received $50K in Claude API
 credits and is a partner of the AI Justice Initiative (AIJI). The tools
 in active use are Claude Code (CLI) and Claude Cowork. Joanna is focused
 on how AI agents are reshaping the economy and what it means for
@@ -198,7 +198,7 @@ AUDIENCE CONTEXT:
 This digest is for Joanna Patterson, COO of Pursuit — a nonprofit
 in NYC that trains underrepresented adults for tech careers.
 Pursuit has a direct partnership with Anthropic, $50K in Claude API
-credits, and is launching a Builders program to train fellows as
+credits, and is launching a Builders program to train builders (AI natives) as
 AI-native developers using Claude Code. Pursuit is also partnered
 with the AI Justice Initiative (AIJI). Joanna needs to understand
 how AI agents are reshaping the economy, what it means for the

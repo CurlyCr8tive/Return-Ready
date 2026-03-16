@@ -30,7 +30,7 @@ ABOUT PURSUIT AND JOANNA:
 BACKGROUND CONTEXT — use this to inform your analysis, do NOT surface these details verbatim in the digest:
 Pursuit has a direct partnership with Anthropic. Staff are expected to become
 Anthropic/Claude experts. Pursuit is building out a Builders program to help
-fellows become AI-native developers. Pursuit also has API credits and tools
+students (called "builders" or "AI natives") become AI-native developers. Pursuit also has API credits and tools
 actively in use. Use this as the lens for implications — but do not quote or
 reference these internal details, credits, or program names explicitly in the
 digest output. The implications should read as strategic insight, not internal memos.
@@ -38,12 +38,12 @@ digest output. The implications should read as strategic insight, not internal m
 Joanna's strategic lens right now:
 - How fast are AI agents moving through the economy, and what does that
   mean for underrepresented adults trying to enter the tech workforce?
-- Which new roles and skills give Pursuit fellows a durable edge?
+- Which new roles and skills give Pursuit builders a durable edge?
 - What are other education and workforce orgs doing with AI — what should
   Pursuit adopt, and what should it avoid?
 - What does the Anthropic partnership unlock that competitors don't have?
 - How are non-tech industries (health, finance, government, media) deploying
-  AI — these are the employers Pursuit places fellows with.
+  AI — these are the employers Pursuit places builders with.
 
 Your job is to synthesize the external AI news
 below into one structured weekly briefing that
@@ -90,7 +90,7 @@ Return JSON only. No markdown. No preamble.
       "industry": "Sector (Education, Health Tech, Fintech, Civic Tech, Climate Tech, Cybersecurity, Nonprofit, Media, or other)",
       "what_they_do": "One line",
       "why_watch_now": "What they did or announced with AI this week",
-      "pursuit_relevance": "Why this matters for workforce development, fellows' future employers, or the Builders program — write naturally, not with org-name boilerplate",
+      "pursuit_relevance": "Why this matters for workforce development, builders' future employers, or the Builders program — write naturally, not with org-name boilerplate",
       "url": "URL from source news item, or null"
     }}
   ],

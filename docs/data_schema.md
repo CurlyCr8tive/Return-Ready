@@ -42,7 +42,7 @@ CREATE TABLE settings (
 INSERT INTO settings (id, pursuit_context)
 VALUES (
   gen_random_uuid(),
-  'Pursuit is a workforce development nonprofit in New York City that trains adults from underrepresented backgrounds for tech careers. Fellows complete a 12-month program covering software engineering, professional skills, and job placement. COO Joanna Patterson oversees operations, programs, and team performance.'
+  'Pursuit is a workforce development nonprofit in New York City that trains adults from underrepresented backgrounds for tech careers. Builders (AI natives) complete a 12-month program covering software engineering, professional skills, and job placement. COO Joanna Patterson oversees operations, programs, and team performance.'
 );
 
 -- Email delivery log

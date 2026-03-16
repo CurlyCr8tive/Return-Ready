@@ -70,7 +70,7 @@ const DEMO_DIGEST: Digest = {
       implication:
         'Computer-use agent fluency is now a teachable, in-demand skill — it belongs in technical curriculum this year, not next.',
       reasoning:
-        "Anthropic's Vercept acquisition signals that computer-use agents will become a core capability in the tools graduates are expected to build with. Fellows who understand how to configure and prompt agents that operate software have a differentiated edge most bootcamp graduates won't have.",
+        "Anthropic's Vercept acquisition signals that computer-use agents will become a core capability in the tools graduates are expected to build with. Builders who understand how to configure and prompt agents that operate software have a differentiated edge most bootcamp graduates won't have.",
       priority: 'HIGH',
     },
     {
