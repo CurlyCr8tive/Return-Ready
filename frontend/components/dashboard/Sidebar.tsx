@@ -9,7 +9,7 @@ import { getWeekLabel } from '@/lib/weekLabel'
 import { supabase } from '@/lib/supabase'
 import styles from './sidebar.module.css'
 
-const LEAVE_START = process.env.NEXT_PUBLIC_LEAVE_START_DATE || '2026-03-01'
+const LEAVE_START = process.env.NEXT_PUBLIC_LEAVE_START_DATE || '2026-03-16'
 const TOTAL_WEEKS = 12
 
 function getWeekProgress() {

@@ -80,7 +80,7 @@ async def get_stats() -> dict[str, Any]:
     next_monday = today + timedelta(days=days_until_monday)
 
     # If leave start date is in the future and sooner than next Monday, use it
-    leave_start_str = os.environ.get("LEAVE_START_DATE", "2026-03-01")
+    leave_start_str = os.environ.get("LEAVE_START_DATE", "2026-03-16")
     leave_start = date.fromisoformat(leave_start_str)
     next_digest = str(leave_start if leave_start > today and leave_start <= next_monday else next_monday)
 

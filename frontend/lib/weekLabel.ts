@@ -22,7 +22,7 @@ function toUtcDate(input: string): Date | null {
 
 export function getOverallWeekFromStartDate(
   weekStart: string | undefined,
-  leaveStartIso = process.env.NEXT_PUBLIC_LEAVE_START_DATE || '2026-03-01'
+  leaveStartIso = process.env.NEXT_PUBLIC_LEAVE_START_DATE || '2026-03-16'
 ): number | null {
   if (!weekStart) return null
   const leaveStart = toUtcDate(leaveStartIso)
