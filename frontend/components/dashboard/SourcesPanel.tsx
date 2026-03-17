@@ -30,11 +30,11 @@ export function SourcesPanel({ digest }: { digest: Pick<Digest,
     },
     {
       label: 'Companies to Watch',
-      items: (digest.companies_to_watch ?? []).map(c => ({
-        title: c.name,
-        pub: c.industry ?? '',
-        url: c.url ?? null,
-      })),
+      items: (digest.companies_to_watch ?? []).map(c => {
+        let domain = ''
+        try { if (c.url) domain = new URL(c.url).hostname.replace(/^www\./, '') } catch {}
+        return { title: c.name, pub: domain, url: c.url ?? null }
+      }),
     },
     {
       label: 'Jobs & Hiring',
