@@ -32,7 +32,7 @@ export function SourcesPanel({ digest }: { digest: Pick<Digest,
       label: 'Companies to Watch',
       items: (digest.companies_to_watch ?? []).map(c => ({
         title: c.name,
-        pub: c.what_they_do,
+        pub: c.industry ?? '',
         url: c.url ?? null,
       })),
     },
