@@ -289,10 +289,10 @@ async def triage_sources(sources: list[dict], digest_week: str) -> list[dict]:
         for i, s in enumerate(sources)
     ]
 
-prompt = TRIAGE_PROMPT.format(
-    sources=json.dumps(condensed, indent=2),
-    source_count=len(sources)
-)
+    prompt = TRIAGE_PROMPT.format(
+        sources=json.dumps(condensed, indent=2),
+        source_count=len(sources)
+    )
 
     # Step 1: Call Claude and parse JSON
     try:
