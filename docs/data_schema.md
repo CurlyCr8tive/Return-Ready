@@ -56,10 +56,43 @@ CREATE TABLE email_log (
   status       TEXT DEFAULT 'sent'
 );
 
+-- Source triage log — one row per source evaluated per week
+-- digest_week references digests.week_start by convention (not a FK),
+-- so triage records can be written before the digest record is generated.
+--
+-- Valid values:
+--   decision:               include | supporting | exclude
+--   relevance_score:        float 0.0 to 1.0
+--   source_type:            article | video | podcast
+--   feature_recommendation: featured | normal | supporting | ignored
+CREATE TABLE source_triage (
+  id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  digest_week            DATE NOT NULL,
+  source_url             TEXT,
+  source_title           TEXT,
+  source_type            TEXT,
+  channel_name           TEXT,
+  publication_date       TEXT,
+  raw_content            TEXT,
+  decision               TEXT,
+  relevance_score        FLOAT,
+  topic_classification   TEXT,
+  digest_section         TEXT,
+  key_takeaway           TEXT,
+  why_it_matters         TEXT,
+  feature_recommendation TEXT,
+  created_at             TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Add video/podcast highlights column to digests.
+-- Digests generated before this migration carry the same data in full_digest_json.
+ALTER TABLE digests ADD COLUMN video_and_podcast_highlights JSONB;
+
 -- Row Level Security
 ALTER TABLE digests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE email_log ENABLE ROW LEVEL SECURITY;
+ALTER TABLE source_triage ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Auth only" ON digests
   FOR ALL USING (auth.role() = 'authenticated');
@@ -68,5 +101,8 @@ CREATE POLICY "Auth only" ON settings
   FOR ALL USING (auth.role() = 'authenticated');
 
 CREATE POLICY "Auth only" ON email_log
+  FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Auth only" ON source_triage
   FOR ALL USING (auth.role() = 'authenticated');
 ```

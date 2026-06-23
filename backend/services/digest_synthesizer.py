@@ -131,12 +131,14 @@ QUALITY RULES — follow these exactly:
 """
 
 
-async def generate_digest(week_start: date) -> dict:
+async def generate_digest(week_start: date, triaged_sources: list[dict] | None = None) -> dict:
     """
     Generates complete weekly digest.
     Calls news_fetcher, runs synthesis,
     stores result in Supabase.
     Returns digest_id and stats.
+    When triaged_sources is provided, merges them into the synthesis input.
+    When triaged_sources is None, falls back to the existing article-only flow.
     """
 
     supabase = get_supabase()
@@ -213,6 +215,60 @@ async def generate_digest(week_start: date) -> dict:
         }
 
     compressed = compress_news(news_result["data"])
+
+    # Merge triaged sources into compressed data when available.
+    # triaged_sources is None when triage failed or was skipped — no change to compressed.
+    video_highlights = None
+    if triaged_sources:
+        # Prepend include+developments triaged items; cap total at 5
+        triage_devs = [
+            {
+                "headline":       t.get("key_takeaway", t.get("title", "")),
+                "what_happened":  "",
+                "why_it_matters": t.get("why_it_matters", ""),
+                "source":         t.get("channel_name", ""),
+                "url":            t.get("url"),
+            }
+            for t in triaged_sources
+            if t.get("decision") == "include" and t.get("digest_section") == "developments"
+        ]
+        compressed["developments"] = (triage_devs + compressed["developments"])[:5]
+
+        # Override featured_resource if triage selected a featured item
+        _type_to_format = {"video": "Video", "podcast": "Podcast", "article": "Article"}
+        featured = [
+            t for t in triaged_sources
+            if t.get("feature_recommendation") == "featured"
+            and t.get("digest_section") == "featured_resource"
+        ]
+        if featured:
+            best = featured[0]  # already sorted by relevance_score desc by triage agent
+            compressed["featured_resource"] = {
+                "title":          best.get("title", ""),
+                "publication":    best.get("channel_name", ""),
+                "url":            best.get("url"),
+                "why_read":       (best.get("why_it_matters", "") or "")[:150],
+                "format":         _type_to_format.get(best.get("source_type", ""), "Article"),
+                "estimated_time": "",
+            }
+
+        # Collect all video/podcast sources for the DB record (stored separately from digest JSON)
+        _highlights = [
+            {
+                "title":                  t.get("title", ""),
+                "url":                    t.get("url"),
+                "source_type":            t.get("source_type", ""),
+                "channel_name":           t.get("channel_name", ""),
+                "key_takeaway":           t.get("key_takeaway", ""),
+                "why_it_matters":         t.get("why_it_matters", ""),
+                "relevance_score":        t.get("relevance_score"),
+                "feature_recommendation": t.get("feature_recommendation", ""),
+            }
+            for t in triaged_sources
+            if t.get("source_type") in ("video", "podcast")
+        ]
+        video_highlights = _highlights or None
+
     filled_prompt = DIGEST_PROMPT.format(
         pursuit_context=pursuit_context,
         external_news=json.dumps(compressed, indent=2)
@@ -297,8 +353,9 @@ async def generate_digest(week_start: date) -> dict:
         "jobs_and_hiring":      digest_data.get("jobs_and_hiring"),
         "featured_resource":    digest_data.get("featured_resource"),
         "full_digest_json":     digest_data,
-        "external_source_count": news_result["source_count"],
-        "slack_message_count":  0
+        "external_source_count":        news_result["source_count"],
+        "slack_message_count":          0,
+        "video_and_podcast_highlights": video_highlights,
     }
 
     insert_result = supabase.table("digests") \
