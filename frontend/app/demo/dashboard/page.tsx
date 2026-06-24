@@ -175,6 +175,8 @@ const DEMO_DIGEST: Digest = {
     read_time: '4 min',
   },
 
+  video_and_podcast_highlights: null,
+
 }
 
 // ---------------------------------------------------------------------------
