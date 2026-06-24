@@ -13,12 +13,15 @@ const LEAVE_START = process.env.NEXT_PUBLIC_LEAVE_START_DATE || '2026-03-16'
 const TOTAL_WEEKS = 12
 
 function getWeekProgress() {
-  const start = new Date(LEAVE_START)
-  const now = new Date()
-  const elapsed = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 7))
-  const current = Math.min(Math.max(elapsed + 1, 1), TOTAL_WEEKS)
-  const pct = Math.round((current / TOTAL_WEEKS) * 100)
-  return { current, pct }
+  const startMs = new Date(`${LEAVE_START}T00:00:00Z`).getTime()
+  const nowMs = Date.now()
+  const elapsedWeeks = Math.floor((nowMs - startMs) / (1000 * 60 * 60 * 24 * 7))
+  const current = Math.max(elapsedWeeks + 1, 1)
+  const pct = Math.min(Math.round((current / TOTAL_WEEKS) * 100), 100)
+  const weekStartIso = new Date(startMs + elapsedWeeks * 7 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split('T')[0]
+  return { current, pct, weekStartIso }
 }
 
 const navItems = [
@@ -30,7 +33,7 @@ const navItems = [
 export function Sidebar({ mobile = false }: { mobile?: boolean }) {
   const pathname = usePathname()
   const router = useRouter()
-  const { current, pct } = getWeekProgress()
+  const { current, pct, weekStartIso } = getWeekProgress()
   const [profileOpen, setProfileOpen] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
 
@@ -158,6 +161,7 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
               { id: 'implications', label: 'Why It Matters' },
               { id: 'jobs',         label: 'Jobs & Skills' },
               { id: 'companies',    label: 'Companies' },
+              { id: 'media',        label: 'Watch & Listen' },
               { id: 'featured',     label: 'One Thing to Read' },
             ].map(({ id, label }) => (
               <a
@@ -176,7 +180,7 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
       {/* Progress + greeting */}
       <div className="mt-auto pt-6 border-t border-border">
         {(() => {
-          const { monthWeek, monthName, overallWeek } = getWeekLabel(current)
+          const { monthWeek, monthName, overallWeek } = getWeekLabel(current, weekStartIso)
           return (
             <>
               <p className="mb-0.5 text-xs text-textmuted sm:text-sm">Hey Joanna, It&apos;s:</p>
@@ -185,7 +189,7 @@ export function Sidebar({ mobile = false }: { mobile?: boolean }) {
                   Week {monthWeek} · {monthName}
                 </span>
                 <span className="absolute bottom-full left-0 mb-1.5 px-2 py-1 bg-navy border border-border rounded-md text-xs font-mono text-textmuted whitespace-nowrap opacity-0 group-hover/week:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
-                  Week {overallWeek} of 12
+                  Week {overallWeek} overall
                 </span>
               </span>
             </>

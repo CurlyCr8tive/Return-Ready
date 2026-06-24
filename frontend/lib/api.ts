@@ -72,6 +72,16 @@ export type Digest = {
   slack_message_count: number
   is_read: boolean
   generated_at: string
+  video_and_podcast_highlights: Array<{
+    title: string
+    url: string | null
+    source_type: 'video' | 'podcast'
+    channel_name: string
+    key_takeaway: string
+    why_it_matters: string
+    relevance_score: number
+    feature_recommendation: string
+  }> | null
 }
 
 export type DigestListItem = {

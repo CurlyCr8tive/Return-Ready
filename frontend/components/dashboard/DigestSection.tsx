@@ -177,6 +177,67 @@ export function JobsSection({ data }: { data: Digest['jobs_and_hiring'] }) {
   )
 }
 
+export function MediaSection({ items }: { items: Digest['video_and_podcast_highlights'] }) {
+  if (!items || items.length === 0) return null
+
+  return (
+    <section id="media">
+      <h2 className="mb-4 border-b border-border pb-3 text-xs font-mono font-semibold uppercase tracking-widest text-gold sm:mb-5">
+        Watch &amp; Listen
+      </h2>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+        {items.map((item, i) => {
+          const isVideo = item.source_type === 'video'
+          const badgeClass = isVideo
+            ? 'border-blue-500/30 bg-blue-500/10 text-blue-400'
+            : 'border-purple-500/30 bg-purple-500/10 text-purple-400'
+          const ctaLabel = isVideo ? 'Watch Now' : 'Listen Now'
+
+          const inner = (
+            <>
+              <div className="mb-2 flex items-center gap-2">
+                <span className={`rounded-full border px-2 py-0.5 text-xs font-medium ${badgeClass}`}>
+                  {isVideo ? 'Video' : 'Podcast'}
+                </span>
+                <span className="font-mono text-xs text-textmuted">{item.channel_name}</span>
+              </div>
+              <h3 className="mb-2 font-display text-base font-semibold leading-snug text-textprimary sm:text-lg">
+                {item.title}
+              </h3>
+              {item.key_takeaway && (
+                <p className="mb-2 text-sm leading-relaxed text-textmuted">{item.key_takeaway}</p>
+              )}
+              {item.why_it_matters && (
+                <p className="text-sm font-medium text-gold">{item.why_it_matters}</p>
+              )}
+            </>
+          )
+
+          return item.url ? (
+            <a
+              key={i}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${item.title} — ${ctaLabel} (opens in new tab)`}
+              className="group flex flex-col rounded-lg border border-border bg-navylight p-3.5 transition hover:border-gold/40 sm:p-4"
+            >
+              {inner}
+              <span className="mt-3 inline-flex items-center gap-1 font-mono text-xs text-gold opacity-70 transition group-hover:opacity-100">
+                {ctaLabel} <span aria-hidden="true">→</span>
+              </span>
+            </a>
+          ) : (
+            <div key={i} className="rounded-lg border border-border bg-navylight p-3.5 sm:p-4">
+              {inner}
+            </div>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
 export function FeaturedSection({ data }: { data: Digest['featured_resource'] }) {
   return (
     <section id="featured" className="rounded-xl border border-border bg-navy p-4 sm:p-5 md:p-6">

@@ -115,6 +115,14 @@ DIGEST SECTION (where it would appear if included):
 FEATURE RECOMMENDATION:
 - featured:   Best single item this week — use as One Thing to Read or Watch
               Assign to at most one source. Prefer video or podcast over article.
+              The featured resource must directly address one of these three:
+              1. How AI is changing the jobs Pursuit graduates compete for
+              2. How peer workforce or education orgs are responding to AI
+              3. What the Anthropic partnership specifically unlocks for Pursuit
+              Never feature a resource primarily about AI capabilities or model
+              releases — Joanna needs strategic implications, not technical depth.
+              If the best source does not meet these criteria, feature the next
+              best one that does.
 - normal:     Include as a standard development or insight
 - supporting: Background context only
 - ignored:    Do not feature

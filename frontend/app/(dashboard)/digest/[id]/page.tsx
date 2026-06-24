@@ -9,6 +9,7 @@ import {
   ImplicationsSection,
   CompaniesSection,
   JobsSection,
+  MediaSection,
   FeaturedSection,
 } from '@/components/dashboard/DigestSection'
 
@@ -67,6 +68,9 @@ export default async function DigestPage({ params }: { params: { id: string } })
         )}
         {digest.companies_to_watch?.length > 0 && (
           <CompaniesSection items={digest.companies_to_watch} />
+        )}
+        {digest.video_and_podcast_highlights && (
+          <MediaSection items={digest.video_and_podcast_highlights} />
         )}
         {digest.slack_highlights && (
           <SlackSection data={digest.slack_highlights} />
